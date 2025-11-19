@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36705.20 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Calculator", "Calculator\Calculator.vcxproj", "{33C7D3DB-1AE1-4C36-8379-398DA2F4371A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33C7D3DB-1AE1-4C36-8379-398DA2F4371A}.Debug|x64.ActiveCfg = Debug|x64
+		{33C7D3DB-1AE1-4C36-8379-398DA2F4371A}.Debug|x64.Build.0 = Debug|x64
+		{33C7D3DB-1AE1-4C36-8379-398DA2F4371A}.Debug|x86.ActiveCfg = Debug|Win32
+		{33C7D3DB-1AE1-4C36-8379-398DA2F4371A}.Debug|x86.Build.0 = Debug|Win32
+		{33C7D3DB-1AE1-4C36-8379-398DA2F4371A}.Release|x64.ActiveCfg = Release|x64
+		{33C7D3DB-1AE1-4C36-8379-398DA2F4371A}.Release|x64.Build.0 = Release|x64
+		{33C7D3DB-1AE1-4C36-8379-398DA2F4371A}.Release|x86.ActiveCfg = Release|Win32
+		{33C7D3DB-1AE1-4C36-8379-398DA2F4371A}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C1AC8C34-E365-4FE5-BEE7-9A9CE616CA13}
+	EndGlobalSection
+EndGlobal
