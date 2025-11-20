@@ -24,7 +24,12 @@ public:
 	void drawButton() {
 		DrawRectangleRec(button, buttonColors.first);
 		DrawRectangleLinesEx(button, 5, GREEN);
-		DrawText(std::to_string(buttonSymbol).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+		if (buttonSymbol > '0' && buttonSymbol < '10') {
+			DrawText(std::to_string(buttonSymbol).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+		}
+		else{
+			DrawText(std::to_string(static_cast<char>(buttonSymbol)).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+		}
 
 	}
 	bool isClicked() {
@@ -32,7 +37,7 @@ public:
 			buttonColors.first = GREEN;
 			buttonColors.second = BLACK;
 
-			return  true;
+			return IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 		}
 		else {
 			buttonColors.first = BLACK;
@@ -43,6 +48,9 @@ public:
 	}
 
 	int getSymbol() const {
-		return buttonSymbol;
+		if (buttonSymbol > '-1' && buttonSymbol < '10') {
+			return buttonSymbol;
+		}
+		
 	}
 };

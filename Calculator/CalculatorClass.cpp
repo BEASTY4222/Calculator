@@ -1,18 +1,18 @@
 #include "CalculatorClass.h"
 
 CalculatorClass::CalculatorClass() {
-	buttons[0] = Button(30, 320, 1);
-	buttons[1] = Button(120, 320, 2);
-	buttons[2] = Button(210, 320, 3);
+	buttons[0] = Button(30, 500, 1);
+	buttons[1] = Button(120, 500, 2);
+	buttons[2] = Button(210, 500, 3);
 	buttons[3] = Button(30, 410, 4);
 	buttons[4] = Button(120, 410, 5);
 	buttons[5] = Button(210, 410, 6);
-	buttons[6] = Button(30, 500, 7);
-	buttons[7] = Button(120, 500, 8);
-	buttons[8] = Button(210, 500, 9);
-	buttons[9] = Button(100, 260, 0);
-	buttons[10] = Button(120, 260, -1);
-	buttons[11] = Button(190, 260, -2);
+	buttons[6] = Button(30, 320, 7);
+	buttons[7] = Button(120, 320, 8);
+	buttons[8] = Button(210, 320, 9);
+	buttons[9] = Button(300, 500, '+');
+	buttons[10] = Button(300, 410, '-');
+	buttons[11] = Button(190, 0, -2);
 
 	equation = "";
 }
@@ -27,10 +27,48 @@ void CalculatorClass::drawButtons() {
 	buttons[6].drawButton();
 	buttons[7].drawButton();
 	buttons[8].drawButton();
+	buttons[9].drawButton();
+	buttons[10].drawButton();
 }
 
 void CalculatorClass::showEquation() {
 	DrawRectangle(30, 30, 340, 200, BLACK);
 	DrawRectangleLines(30,30,340,200,GREEN);
-	DrawText(equation.c_str(), 250, 190, 30, GREEN);
+	DrawText(equation.c_str(), 40, 190, 30, GREEN);
+}
+
+void CalculatorClass::handleButtonClicks() {
+	if (buttons[0].isClicked()) {
+		updateEquation(std::to_string(buttons[0].getSymbol()));
+	}if (buttons[1].isClicked()) {
+		updateEquation(std::to_string(buttons[1].getSymbol()));
+	}if (buttons[2].isClicked()) {
+		updateEquation(std::to_string(buttons[2].getSymbol()));
+	}if (buttons[3].isClicked()) {
+		updateEquation(std::to_string(buttons[3].getSymbol()));
+	}if (buttons[4].isClicked()) {
+		updateEquation(std::to_string(buttons[4].getSymbol()));
+	}if (buttons[5].isClicked()) {
+		updateEquation(std::to_string(buttons[5].getSymbol()));
+	}if (buttons[6].isClicked()) {
+		updateEquation(std::to_string(buttons[6].getSymbol()));
+	}if (buttons[7].isClicked()) {
+		updateEquation(std::to_string(buttons[7].getSymbol()));
+	}if (buttons[8].isClicked()) {
+		updateEquation(std::to_string(buttons[8].getSymbol()));
+	}
+	if (buttons[9].isClicked()) {
+		updateEquation(std::string(1, static_cast<char>(buttons[9].getSymbol())));
+	}
+	if (buttons[10].isClicked()) {
+		updateEquation(std::string(1, static_cast<char>(buttons[10].getSymbol())));
+	}
+
+	if (IsKeyPressed(KEY_BACKSPACE)) {
+		if (equation.size() > 1) {
+			equation.pop_back();
+			equation.pop_back();
+		}
+		
+	}
 }

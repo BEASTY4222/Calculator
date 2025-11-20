@@ -13,18 +13,12 @@ public:
 
 	void drawButtons();
 
-	inline void handleButtonClicks() {
-		for (int i = 0; i < 12; i++) {
-			if (buttons[i].isClicked()) {
-				updateEquation(std::to_string(buttons->getSymbol()));
-			}
-		}
-	}
+	void handleButtonClicks();
 
 	void showEquation();
 
 	void updateEquation(const std::string &newEquation) {
-		equation = newEquation;
+		equation += newEquation + " ";
 	}
 
 };
