@@ -5,7 +5,7 @@
 
 int main()
 {
-    InitWindow(400, 600, "Essential Raylib");
+    InitWindow(400, 800, "Essential Raylib");
     SetTargetFPS(60);
 	CalculatorClass calculator;
 
