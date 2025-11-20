@@ -1,12 +1,14 @@
 #pragma once
 #include "raylib.h"
 #include <string>
+#include <stack>
 
 class Button {
 private:
 	Rectangle button;
 	char buttonSymbol;
 	std::pair<Color,Color> buttonColors;
+	
 
 public:
 	Button() {}
@@ -21,14 +23,14 @@ public:
 		buttonColors.second = GREEN;
 
 	}
-	void drawButton() {
+	void drawButton(){
 		DrawRectangleRec(button, buttonColors.first);
 		DrawRectangleLinesEx(button, 5, GREEN);
-		if (buttonSymbol > '0' && buttonSymbol < '10') {
-			DrawText(std::to_string(buttonSymbol).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+		if (buttonSymbol >= 0 && buttonSymbol <= 10) {
+ 			DrawText(std::string(1,'0' + buttonSymbol).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
 		}
 		else{
-			DrawText(std::to_string(static_cast<char>(buttonSymbol)).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+			DrawText(std::string(1, buttonSymbol ).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
 		}
 
 	}
@@ -48,7 +50,7 @@ public:
 	}
 
 	int getSymbol() const {
-		if (buttonSymbol > '-1' && buttonSymbol < '10') {
+		if (buttonSymbol > '0' && buttonSymbol < '10') {
 			return buttonSymbol;
 		}
 		
