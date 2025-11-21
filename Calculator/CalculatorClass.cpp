@@ -14,8 +14,14 @@ CalculatorClass::CalculatorClass() {
 	buttons[10] = Button(300, 500, '+');
 	buttons[11] = Button(300, 410, '-');
 	buttons[12] = Button(300, 320, '=');
+	buttons[13] = Button(120, 590, '*');
+	buttons[14] = Button(210, 590, '/');
+	buttons[15] = Button(30, 590, 'C');
+	buttons[16] = Button(120, 680, '.');
+	buttons[17] = Button(30, 680, '(');
+	buttons[18] = Button(210, 680, "complex\n mode");
 
-	equation = "";
+	firstParenthesis = true;
 }
 
 void CalculatorClass::drawButtons() {
@@ -32,6 +38,12 @@ void CalculatorClass::drawButtons() {
 	buttons[10].drawButton();
 	buttons[11].drawButton();
 	buttons[12].drawButton();
+	buttons[13].drawButton();
+	buttons[14].drawButton();
+	buttons[15].drawButton();
+	buttons[16].drawButton();
+	buttons[17].drawButton();
+	buttons[18].drawButton();
 }
 
 void CalculatorClass::showEquation() {
@@ -68,10 +80,33 @@ void CalculatorClass::handleButtonClicks() {
 	if (buttons[10].isClicked()) {
 		updateEquation(std::string(1, static_cast<char>(buttons[10].getSymbol())), false);
 		operations.push_back(static_cast<char>(buttons[10].getSymbol()));
-	}
-	if (buttons[11].isClicked()) {
+	}if (buttons[11].isClicked()) {
 		updateEquation(std::string(1, static_cast<char>(buttons[11].getSymbol())), false);
 		operations.push_back(static_cast<char>(buttons[11].getSymbol()));
+	}if (buttons[13].isClicked()) {
+		updateEquation(std::string(1, static_cast<char>(buttons[13].getSymbol())), false);
+		operations.push_back(static_cast<char>(buttons[13].getSymbol()));
+	}if (buttons[14].isClicked()) {
+		updateEquation(std::string(1, static_cast<char>(buttons[14].getSymbol())), false);
+		operations.push_back(static_cast<char>(buttons[14].getSymbol()));
+	}if (buttons[15].isClicked()) {
+		updateEquation("",true);
+		numbers.clear();
+	}if (buttons[16].isClicked()) {
+		updateEquation(std::string(1, static_cast<char>(buttons[16].getSymbol())), false);
+		operations.push_back(static_cast<char>(buttons[16].getSymbol()));
+	}if (buttons[17].isClicked()) {
+		if (firstParenthesis) {
+			updateEquation(std::string(1, static_cast<char>(buttons[17].getSymbol())), false);
+			operations.push_back(static_cast<char>(buttons[17].getSymbol()));
+			firstParenthesis = false;
+		}
+		else {
+			updateEquation(")", false);
+			operations.push_back(')');
+			firstParenthesis = true;
+		}
+		
 	}
 
 	if (buttons[12].isClicked()) {
@@ -81,7 +116,7 @@ void CalculatorClass::handleButtonClicks() {
 		//number 1 + number 2
 
 		if (numbers.size() >= 2) {
-			int resultInt = 0;
+			double resultInt = 0;
 			size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
 			for (size_t i = 0; i < opCount; i++) {
 				switch (operations[i])
@@ -91,6 +126,17 @@ void CalculatorClass::handleButtonClicks() {
 					break;
 				case '-':
 					resultInt = numbers[i] - numbers[i + 1];
+					break;
+				case '*':
+					resultInt = numbers[i] * numbers[i + 1];
+					break;
+				case '/':
+					if (numbers[i + 1] != 0) {
+						resultInt = numbers[i] / numbers[i + 1];
+					}
+					else {
+						resultInt = 0; // Handle division by zero
+					}
 					break;
 				default:
 					break;
@@ -115,7 +161,7 @@ void CalculatorClass::updateEquation(const std::string& newEquation, bool equals
 }
 
 void CalculatorClass::getNumbers(const std::string & equation) {
-	int number = 0;
+	double number = 0;
 	for (int i = 0; i <= equation.length();i++) {
 		if (equation[i] >= '0' && equation[i] <= '9') {
 			number = number * 10 + (equation[i] - '0');

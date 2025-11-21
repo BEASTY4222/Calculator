@@ -6,13 +6,13 @@
 class Button {
 private:
 	Rectangle button;
-	char buttonSymbol;
+	std::string buttonSymbol;
 	std::pair<Color,Color> buttonColors;
 	
 
 public:
 	Button() {}
-	Button(const float &x,const float &y,const char & buttonSymbol) {
+	Button(const float& x, const float& y, const std::string& buttonSymbol) {
 		button.x = x;
 		button.y = y;
 		button.width = 80;
@@ -21,18 +21,32 @@ public:
 
 		buttonColors.first = BLACK;
 		buttonColors.second = GREEN;
+	}
+	Button(const float &x,const float &y,const char & buttonSymbol) {
+		button.x = x;
+		button.y = y;
+		button.width = 80;
+		button.height = 80;
+		this->buttonSymbol[0] = buttonSymbol;
+
+		buttonColors.first = BLACK;
+		buttonColors.second = GREEN;
 
 	}
 	void drawButton(){
 		DrawRectangleRec(button, buttonColors.first);
 		DrawRectangleLinesEx(button, 5, GREEN);
-		if (buttonSymbol >= 0 && buttonSymbol <= 10) {
- 			DrawText(std::string(1,'0' + buttonSymbol).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+		if (buttonSymbol.length() > 1) {
+			DrawText(buttonSymbol.c_str(), button.x + 10, button.y + 20, 18, buttonColors.second);
 		}
-		else{
-			DrawText(std::string(1, buttonSymbol ).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+		else {
+			if (buttonSymbol[0] >= 0 && buttonSymbol[0] <= 10) {
+				DrawText(buttonSymbol.c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+			}
+			else {
+				DrawText(buttonSymbol.c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+			}
 		}
-
 	}
 	bool isClicked() {
 		if (CheckCollisionPointRec(GetMousePosition(), button)) {
@@ -50,8 +64,8 @@ public:
 	}
 
 	int getSymbol() const {
-		if (buttonSymbol > '0' && buttonSymbol < '10') {
-			return buttonSymbol;
+		if (buttonSymbol[0] > '0' && buttonSymbol[0] < '10') {
+			return buttonSymbol[0];
 		}
 		
 	}
