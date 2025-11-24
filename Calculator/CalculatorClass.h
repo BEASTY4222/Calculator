@@ -5,11 +5,12 @@
 
 
 class CalculatorClass {
-	Button buttons[20];
+	Button buttons[40];
 	std::string equation;
 	std::deque<double> numbers;// 1     2   3 = 6   1
 	std::deque<char> operations;//   +    *   =   +
 	bool firstParenthesis;
+	bool complexMode;
 
 
 public:

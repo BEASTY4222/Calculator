@@ -12,11 +12,11 @@ private:
 
 public:
 	Button() {}
-	Button(const float& x, const float& y, const std::string& buttonSymbol) {
+	Button(const float& x, const float& y, const std::string& buttonSymbol, const int& buttonWidth, const int& buttonHeight) {
 		button.x = x;
 		button.y = y;
-		button.width = 80;
-		button.height = 80;
+		button.width = buttonWidth;
+		button.height = buttonHeight;
 		this->buttonSymbol = buttonSymbol;
 
 		buttonColors.first = BLACK;
@@ -36,12 +36,12 @@ public:
 	void drawButton(){
 		DrawRectangleRec(button, buttonColors.first);
 		DrawRectangleLinesEx(button, 5, GREEN);
-		if (buttonSymbol.length() > 1) {
-			DrawText(buttonSymbol.c_str(), button.x + 10, button.y + 20, 18, buttonColors.second);
+		if (buttonSymbol.length() > 5) {
+			DrawText(buttonSymbol.c_str(), button.x + 15, button.y + 30, 23, buttonColors.second);
 		}
 		else {
 			if (buttonSymbol[0] >= 0 && buttonSymbol[0] <= 10) {
-				DrawText(buttonSymbol.c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
+				DrawText(std::to_string(buttonSymbol[0]).c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);
 			}
 			else {
 				DrawText(buttonSymbol.c_str(), button.x + 30, button.y + 20, 40, buttonColors.second);

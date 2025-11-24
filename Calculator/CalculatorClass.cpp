@@ -19,31 +19,44 @@ CalculatorClass::CalculatorClass() {
 	buttons[15] = Button(30, 590, 'C');
 	buttons[16] = Button(120, 680, '.');
 	buttons[17] = Button(30, 680, '(');
-	buttons[18] = Button(210, 680, "complex\n mode");
+	buttons[18] = Button(210, 680, "complex mode", 170, 80);
+	buttons[19] = Button(30, 500, "sin", 80, 80);
+
+
+
 
 	firstParenthesis = true;
+	complexMode = false;
 }
 
 void CalculatorClass::drawButtons() {
-	buttons[0].drawButton();
-	buttons[1].drawButton();
-	buttons[2].drawButton();
-	buttons[3].drawButton();
-	buttons[4].drawButton();
-	buttons[5].drawButton();
-	buttons[6].drawButton();
-	buttons[7].drawButton();
-	buttons[8].drawButton();
-	buttons[9].drawButton();
-	buttons[10].drawButton();
-	buttons[11].drawButton();
-	buttons[12].drawButton();
-	buttons[13].drawButton();
-	buttons[14].drawButton();
-	buttons[15].drawButton();
-	buttons[16].drawButton();
-	buttons[17].drawButton();
-	buttons[18].drawButton();
+	if (complexMode) {
+		buttons[19].drawButton();
+	}
+	else {
+		buttons[0].drawButton();
+		buttons[1].drawButton();
+		buttons[2].drawButton();
+		buttons[3].drawButton();
+		buttons[4].drawButton();
+		buttons[5].drawButton();
+		buttons[6].drawButton();
+		buttons[7].drawButton();
+		buttons[8].drawButton();
+		buttons[9].drawButton();
+		buttons[10].drawButton();
+		buttons[11].drawButton();
+		buttons[12].drawButton();
+		buttons[13].drawButton();
+		buttons[14].drawButton();
+		buttons[15].drawButton();
+		buttons[16].drawButton();
+		buttons[17].drawButton();
+		buttons[18].drawButton();
+	}
+	
+		
+	
 }
 
 void CalculatorClass::showEquation() {
@@ -142,13 +155,25 @@ void CalculatorClass::handleButtonClicks() {
 					break;
 				}
 			}
-			updateEquation(std::to_string(resultInt), true);
+
+			std::string resultStr = std::to_string(resultInt);
+			resultStr.erase(resultStr.find('.') + 3, std::string::npos); // Remove trailing zeros
+			updateEquation(resultStr, true);
+
 			numbers.clear();
+			operations.clear();
 
 			getNumbers(equation);
 		}
 		
 	}
+
+	if (buttons[18].isClicked()) {
+		complexMode = !complexMode;
+
+	}
+
+
 
 	handleMiscKeys();
 }
@@ -166,6 +191,9 @@ void CalculatorClass::getNumbers(const std::string & equation) {
 		if (equation[i] >= '0' && equation[i] <= '9') {
 			number = number * 10 + (equation[i] - '0');
 		}
+		else if (equation[i] == '.') {
+			continue;
+		}
 		else {
 			numbers.push_back(number);
 			number = 0;
@@ -175,15 +203,11 @@ void CalculatorClass::getNumbers(const std::string & equation) {
 
 void CalculatorClass::handleMiscKeys() {
 	if (equation.length() > 0 && IsKeyPressed(KEY_BACKSPACE)) {
-		if (numbers.empty()) {
-			equation.pop_back();
+		if (numbers.size() == 1) {
+			updateEquation("", true);
 		}
 		else {
-			int numberOfDigits = std::to_string(numbers.back()).length();
-			while (numberOfDigits--) {
-				equation.pop_back();
-			}
-			numbers.clear();
+			equation.pop_back();
 		}
 	}
 	if (IsKeyPressed(KEY_SPACE)) { updateEquation(" ", false); }
