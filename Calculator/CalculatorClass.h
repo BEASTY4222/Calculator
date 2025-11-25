@@ -9,6 +9,7 @@ class CalculatorClass {
 	std::string equation;
 	std::deque<double> numbers;// 1     2   3 = 6   1
 	std::deque<char> operations;//   +    *   =   +
+	std::deque<int> parenthesiesIndexes;
 	bool firstParenthesis;
 	bool complexMode;
 
@@ -26,5 +27,11 @@ public:
 
 	void getNumbers(const std::string &equation);
 
+	int getIndexFromEquation(const char & target);
+
 	void handleMiscKeys();
+
+	double mathing();
+
+	bool parenthesiesMathing();
 };

@@ -17,10 +17,11 @@ CalculatorClass::CalculatorClass() {
 	buttons[13] = Button(120, 590, '*');
 	buttons[14] = Button(210, 590, '/');
 	buttons[15] = Button(30, 590, 'C');
-	buttons[16] = Button(120, 680, '.');
+	buttons[16] = Button(120, 680, ')');
 	buttons[17] = Button(30, 680, '(');
-	buttons[18] = Button(210, 680, "complex mode", 170, 80);
+	buttons[18] = Button(300, 680, "complex mode", 80, 80);
 	buttons[19] = Button(30, 500, "sin", 80, 80);
+	buttons[20] = Button(210,680,'.');
 
 
 
@@ -53,6 +54,7 @@ void CalculatorClass::drawButtons() {
 		buttons[16].drawButton();
 		buttons[17].drawButton();
 		buttons[18].drawButton();
+		buttons[20].drawButton();
 	}
 	
 		
@@ -106,62 +108,34 @@ void CalculatorClass::handleButtonClicks() {
 		updateEquation("",true);
 		numbers.clear();
 	}if (buttons[16].isClicked()) {
-		updateEquation(std::string(1, static_cast<char>(buttons[16].getSymbol())), false);
-		operations.push_back(static_cast<char>(buttons[16].getSymbol()));
+		updateEquation(")", false);
+		parenthesiesIndexes.push_back(getIndexFromEquation(')'));
+
 	}if (buttons[17].isClicked()) {
-		if (firstParenthesis) {
-			updateEquation(std::string(1, static_cast<char>(buttons[17].getSymbol())), false);
-			operations.push_back(static_cast<char>(buttons[17].getSymbol()));
-			firstParenthesis = false;
-		}
-		else {
-			updateEquation(")", false);
-			operations.push_back(')');
-			firstParenthesis = true;
-		}
-		
+			updateEquation("(", false);
+			parenthesiesIndexes.push_front(getIndexFromEquation('('));
+
+	}if (buttons[20].isClicked()) {
+		updateEquation(".", false);
 	}
 
 	if (buttons[12].isClicked()) {
-		
-		getNumbers(equation);
-
-		//number 1 + number 2
-
 		if (numbers.size() >= 2) {
-			double resultInt = 0;
+			double resultDouble = 0;
 			size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
 			for (size_t i = 0; i < opCount; i++) {
-				switch (operations[i])
-				{
-				case '+':
-					resultInt = numbers[i] + numbers[i + 1];
-					break;
-				case '-':
-					resultInt = numbers[i] - numbers[i + 1];
-					break;
-				case '*':
-					resultInt = numbers[i] * numbers[i + 1];
-					break;
-				case '/':
-					if (numbers[i + 1] != 0) {
-						resultInt = numbers[i] / numbers[i + 1];
-					}
-					else {
-						resultInt = 0; // Handle division by zero
-					}
-					break;
-				default:
-					break;
+				if (!parenthesiesMathing()) {
+					resultDouble = mathing();
 				}
 			}
 
-			std::string resultStr = std::to_string(resultInt);
+			std::string resultStr = std::to_string(resultDouble);
 			resultStr.erase(resultStr.find('.') + 3, std::string::npos); // Remove trailing zeros
 			updateEquation(resultStr, true);
 
 			numbers.clear();
 			operations.clear();
+			parenthesiesIndexes.clear();
 
 			getNumbers(equation);
 		}
@@ -201,14 +175,98 @@ void CalculatorClass::getNumbers(const std::string & equation) {
 	}
 }
 
+int CalculatorClass::getIndexFromEquation(const char& target) {
+	for (int i = 0;i < equation.length();i++)
+		if (equation[i] == target) return i;
+}
+
 void CalculatorClass::handleMiscKeys() {
 	if (equation.length() > 0 && IsKeyPressed(KEY_BACKSPACE)) {
 		if (numbers.size() == 1) {
 			updateEquation("", true);
+
+			// delete from the parethesies arr too
+			if (equation.back() == '(') 
+				parenthesiesIndexes.pop_front();
+			else if(equation.back() == ')') 
+				parenthesiesIndexes.pop_back();
+			
 		}
 		else {
 			equation.pop_back();
 		}
 	}
 	if (IsKeyPressed(KEY_SPACE)) { updateEquation(" ", false); }
+}
+
+double CalculatorClass::mathing() {
+	getNumbers(equation);
+
+	double resultDouble = 0;
+	size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
+	for (size_t i = 0; i < opCount; i++) {
+		switch (operations[i])
+		{
+		case '+':
+			resultDouble = numbers[i] + numbers[i + 1];
+			break;
+		case '-':
+			resultDouble = numbers[i] - numbers[i + 1];
+			break;
+		case '*':
+			resultDouble = numbers[i] * numbers[i + 1];
+			break;
+		case '/':
+			if (numbers[i + 1] != 0) {
+				resultDouble = numbers[i] / numbers[i + 1];
+			}
+			else {
+				resultDouble = 0; // Handle division by zero
+			}
+			break;
+		default:
+			break;
+		}					
+	}
+
+	return resultDouble;
+}
+
+bool CalculatorClass::parenthesiesMathing() {
+	getNumbers(equation);
+
+	double resultDouble = 0;
+	size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
+	for (size_t i = 0; i < opCount; i++) {
+		if (parenthesiesIndexes.size() % 2 == 0 && parenthesiesIndexes.size()) {
+			for (int start = 0;start < parenthesiesIndexes.size();start++) {
+				switch (operations[start]){
+				case '+':
+					resultDouble = numbers[parenthesiesIndexes[start] + 1] + numbers[i + 1];
+					break;
+				case '-':
+					resultDouble = numbers[parenthesiesIndexes[start] + 1] - numbers[i + 1];
+					break;
+				case '*':
+					resultDouble = numbers[parenthesiesIndexes[start] + 1] * numbers[i + 1];
+					break;
+				case '/':
+					if (numbers[i + 1] != 0) {
+						resultDouble = numbers[parenthesiesIndexes[start] + 1] / numbers[i + 1];
+					}
+					else {
+						resultDouble = 0; // Handle division by zero
+					}
+					break;
+				default:
+					break;
+				}
+				numbers.push_back(resultDouble);
+				parenthesiesIndexes.clear();
+			}
+		}
+		else {
+			return false;
+		}
+	}
 }
