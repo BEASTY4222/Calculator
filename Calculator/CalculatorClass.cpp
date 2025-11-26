@@ -93,15 +93,38 @@ void CalculatorClass::handleButtonClicks() {
 
 	// operators
 	if (buttons[10].isClicked()) {
+		if (!parenthesies.empty()) {
+			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
+				parenthesies.push_back('+');
+			}
+		}
+		
 		updateEquation(std::string(1, static_cast<char>(buttons[10].getSymbol())), false);
 		operations.push_back(static_cast<char>(buttons[10].getSymbol()));
+		
 	}if (buttons[11].isClicked()) {
+		if (!parenthesies.empty()) {
+			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
+				parenthesies.push_back('+');
+			}
+		}
+
 		updateEquation(std::string(1, static_cast<char>(buttons[11].getSymbol())), false);
 		operations.push_back(static_cast<char>(buttons[11].getSymbol()));
 	}if (buttons[13].isClicked()) {
+		if (!parenthesies.empty()) {
+			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
+				parenthesies.push_back('+');
+			}
+		}
 		updateEquation(std::string(1, static_cast<char>(buttons[13].getSymbol())), false);
 		operations.push_back(static_cast<char>(buttons[13].getSymbol()));
 	}if (buttons[14].isClicked()) {
+		if (!parenthesies.empty()) {
+			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
+				parenthesies.push_back('+');
+			}
+		}
 		updateEquation(std::string(1, static_cast<char>(buttons[14].getSymbol())), false);
 		operations.push_back(static_cast<char>(buttons[14].getSymbol()));
 	}if (buttons[15].isClicked()) {
@@ -110,16 +133,20 @@ void CalculatorClass::handleButtonClicks() {
 	}if (buttons[16].isClicked()) {
 		updateEquation(")", false);
 		parenthesiesIndexes.push_back(getIndexFromEquation(')'));
+		parenthesies.push_back(')');
 
 	}if (buttons[17].isClicked()) {
 			updateEquation("(", false);
 			parenthesiesIndexes.push_front(getIndexFromEquation('('));
+			parenthesies.push_front('(');
 
 	}if (buttons[20].isClicked()) {
 		updateEquation(".", false);
 	}
 
 	if (buttons[12].isClicked()) {
+		getNumbers(equation);
+
 		if (numbers.size() >= 2) {
 			double resultDouble = 0;
 			size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
@@ -160,17 +187,20 @@ void CalculatorClass::updateEquation(const std::string& newEquation, bool equals
 }
 
 void CalculatorClass::getNumbers(const std::string & equation) {
+	bool change = false;
 	double number = 0;
 	for (int i = 0; i <= equation.length();i++) {
 		if (equation[i] >= '0' && equation[i] <= '9') {
 			number = number * 10 + (equation[i] - '0');
+			change = true;
 		}
 		else if (equation[i] == '.') {
 			continue;
 		}
-		else {
+		else if (change) {
 			numbers.push_back(number);
 			number = 0;
+			change = false;
 		}
 	}
 }
@@ -200,8 +230,6 @@ void CalculatorClass::handleMiscKeys() {
 }
 
 double CalculatorClass::mathing() {
-	getNumbers(equation);
-
 	double resultDouble = 0;
 	size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
 	for (size_t i = 0; i < opCount; i++) {
@@ -226,6 +254,8 @@ double CalculatorClass::mathing() {
 			break;
 		default:
 			break;
+
+			operations.pop_front();
 		}					
 	}
 
@@ -233,26 +263,27 @@ double CalculatorClass::mathing() {
 }
 
 bool CalculatorClass::parenthesiesMathing() {
-	getNumbers(equation);
-
 	double resultDouble = 0;
 	size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
 	for (size_t i = 0; i < opCount; i++) {
 		if (parenthesiesIndexes.size() % 2 == 0 && parenthesiesIndexes.size()) {
-			for (int start = 0;start < parenthesiesIndexes.size();start++) {
-				switch (operations[start]){
+			for (int start = 0;start < parenthesiesIndexes.size() - 1;start++) {
+				int num1 = numbers[parenthesiesIndexes[start] - 1];
+				int num2 = numbers[parenthesiesIndexes.back() / parenthesies.size() / 2];
+
+				switch (parenthesies[start + 1]){
 				case '+':
-					resultDouble = numbers[parenthesiesIndexes[start] + 1] + numbers[i + 1];
+					resultDouble = num1 + num2;
 					break;
 				case '-':
-					resultDouble = numbers[parenthesiesIndexes[start] + 1] - numbers[i + 1];
+					resultDouble = numbers[parenthesiesIndexes[start] - 1] - numbers[parenthesiesIndexes.back() - 1];
 					break;
 				case '*':
-					resultDouble = numbers[parenthesiesIndexes[start] + 1] * numbers[i + 1];
+					resultDouble = numbers[parenthesiesIndexes[start] - 1] * numbers[parenthesiesIndexes.back() - 1];
 					break;
 				case '/':
-					if (numbers[i + 1] != 0) {
-						resultDouble = numbers[parenthesiesIndexes[start] + 1] / numbers[i + 1];
+					if (numbers[parenthesiesIndexes.back() - 1] != 0) {
+						resultDouble = numbers[parenthesiesIndexes[start] - 1] / numbers[parenthesiesIndexes.back() - 1];
 					}
 					else {
 						resultDouble = 0; // Handle division by zero
@@ -260,6 +291,8 @@ bool CalculatorClass::parenthesiesMathing() {
 					break;
 				default:
 					break;
+
+					operations.pop_front();
 				}
 				numbers.push_back(resultDouble);
 				parenthesiesIndexes.clear();
