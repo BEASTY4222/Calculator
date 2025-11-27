@@ -266,24 +266,29 @@ bool CalculatorClass::parenthesiesMathing() {
 	double resultDouble = 0;
 	size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
 	for (size_t i = 0; i < opCount; i++) {
+		bool change = false;
 		if (parenthesiesIndexes.size() % 2 == 0 && parenthesiesIndexes.size()) {
-			for (int start = 0;start < parenthesiesIndexes.size() - 1;start++) {
+			for (int start = (parenthesiesIndexes.size() / parenthesiesIndexes.size()) - 1;!change;start++) {
+
 				int num1 = numbers[parenthesiesIndexes[start] - 1];
+				numbers.erase(numbers.begin() + parenthesiesIndexes[start] - 1);
+
 				int num2 = numbers[parenthesiesIndexes.back() / parenthesies.size() / 2];
+				numbers.erase(numbers.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
 
 				switch (parenthesies[start + 1]){
 				case '+':
 					resultDouble = num1 + num2;
 					break;
 				case '-':
-					resultDouble = numbers[parenthesiesIndexes[start] - 1] - numbers[parenthesiesIndexes.back() - 1];
+					resultDouble = num1 - num2;
 					break;
 				case '*':
-					resultDouble = numbers[parenthesiesIndexes[start] - 1] * numbers[parenthesiesIndexes.back() - 1];
+					resultDouble = num1 * num2;
 					break;
 				case '/':
-					if (numbers[parenthesiesIndexes.back() - 1] != 0) {
-						resultDouble = numbers[parenthesiesIndexes[start] - 1] / numbers[parenthesiesIndexes.back() - 1];
+					if (num2 != 0) {
+						resultDouble = num1 / num2;
 					}
 					else {
 						resultDouble = 0; // Handle division by zero
@@ -295,7 +300,21 @@ bool CalculatorClass::parenthesiesMathing() {
 					operations.pop_front();
 				}
 				numbers.push_back(resultDouble);
-				parenthesiesIndexes.clear();
+
+				if (parenthesies.size() % 3 == 0) {
+					parenthesies.erase(parenthesies.begin() + parenthesies[start]);
+					parenthesies.erase(parenthesies.begin() + parenthesies[start + 1]);
+					parenthesies.erase(parenthesies.begin() + parenthesies[start + 2]);
+				}
+				else {
+					for (int j = start + 1;j < parenthesies.size() - 2;j++) {
+						parenthesies.erase(parenthesies.begin() + j);
+					}
+					parenthesies.erase(parenthesies.begin() + parenthesies[start]);
+					parenthesies.erase(parenthesies.begin() + parenthesies[start + 1]);
+				}
+				
+				change = true;
 			}
 		}
 		else {
