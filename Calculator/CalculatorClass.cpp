@@ -149,9 +149,9 @@ void CalculatorClass::handleButtonClicks() {
 
 		if (numbers.size() >= 2) {
 			double resultDouble = 0;
-			size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
-			for (size_t i = 0; i < opCount; i++) {
-				if (!parenthesiesMathing()) {
+			int operationsSize = operations.size();
+			for (size_t i = 0; i < operationsSize; i++) {
+				if (parenthesiesMathing() == false) {
 					resultDouble = mathing();
 				}
 			}
@@ -188,13 +188,21 @@ void CalculatorClass::updateEquation(const std::string& newEquation, bool equals
 
 void CalculatorClass::getNumbers(const std::string & equation) {
 	bool change = false;
+	bool dot = false;
+	int modifier = 10;
 	double number = 0;
 	for (int i = 0; i <= equation.length();i++) {
 		if (equation[i] >= '0' && equation[i] <= '9') {
 			number = number * 10 + (equation[i] - '0');
+
+			if (dot) {
+				number = number / (modifier * i);
+			}
+			
 			change = true;
 		}
 		else if (equation[i] == '.') {
+			dot = true;
 			continue;
 		}
 		else if (change) {
@@ -213,17 +221,18 @@ int CalculatorClass::getIndexFromEquation(const char& target) {
 void CalculatorClass::handleMiscKeys() {
 	if (equation.length() > 0 && IsKeyPressed(KEY_BACKSPACE)) {
 		if (numbers.size() == 1) {
-			updateEquation("", true);
-
-			// delete from the parethesies arr too
-			if (equation.back() == '(') 
-				parenthesiesIndexes.pop_front();
-			else if(equation.back() == ')') 
-				parenthesiesIndexes.pop_back();
-			
+			updateEquation("", true);	
+			numbers.clear();
 		}
 		else {
-			equation.pop_back();
+			if (equation.back() == '(')
+				parenthesiesIndexes.pop_front();
+			else if (equation.back() == ')')
+				parenthesiesIndexes.pop_back();
+			else if(equation.back() == '+' || equation.back() == '-' || equation.back() == '*' || equation.back() == '/')
+				operations.pop_back();
+
+				equation.pop_back();
 		}
 	}
 	if (IsKeyPressed(KEY_SPACE)) { updateEquation(" ", false); }
@@ -231,8 +240,8 @@ void CalculatorClass::handleMiscKeys() {
 
 double CalculatorClass::mathing() {
 	double resultDouble = 0;
-	size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
-	for (size_t i = 0; i < opCount; i++) {
+	int operationsSize = operations.size();
+	for (size_t i = 0; i < operationsSize; i++) {
 		switch (operations[i])
 		{
 		case '+':
@@ -264,10 +273,10 @@ double CalculatorClass::mathing() {
 
 bool CalculatorClass::parenthesiesMathing() {
 	double resultDouble = 0;
-	size_t opCount = std::min(numbers.size() > 0 ? numbers.size() - 1 : 0, operations.size());
-	for (size_t i = 0; i < opCount; i++) {
+	int operationsSize = operations.size();
+	for (size_t i = 0; i < operationsSize; i++) {
 		bool change = false;
-		if (parenthesiesIndexes.size() % 2 == 0 && parenthesiesIndexes.size()) {
+		if (parenthesiesIndexes.size() % 2 == 0 && parenthesiesIndexes.size() >= 2) {
 			for (int start = (parenthesiesIndexes.size() / parenthesiesIndexes.size()) - 1;!change;start++) {
 
 				int num1 = numbers[parenthesiesIndexes[start] - 1];
@@ -277,41 +286,50 @@ bool CalculatorClass::parenthesiesMathing() {
 				numbers.erase(numbers.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
 
 				switch (parenthesies[start + 1]){
-				case '+':
-					resultDouble = num1 + num2;
-					break;
-				case '-':
-					resultDouble = num1 - num2;
-					break;
-				case '*':
-					resultDouble = num1 * num2;
-					break;
-				case '/':
-					if (num2 != 0) {
-						resultDouble = num1 / num2;
-					}
-					else {
-						resultDouble = 0; // Handle division by zero
-					}
-					break;
-				default:
-					break;
+					case '+':
+						resultDouble = num1 + num2;
+						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[start + 1]));
+						break;
+					case '-':
+						resultDouble = num1 - num2;
+						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[start + 1]));
+						break;
+					case '*':
+						resultDouble = num1 * num2;
+						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[start + 1]));
+						break;
+					case '/':
+						if (num2 != 0) {
+							resultDouble = num1 / num2;
+						}
+						else {
+							resultDouble = 0; // Handle division by zero
+						}
 
-					operations.pop_front();
+						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[start + 1]));
+						break;
+					default:
+						break;
+
 				}
+				
 				numbers.push_back(resultDouble);
 
+				parenthesiesIndexes.erase(parenthesiesIndexes.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
+				parenthesiesIndexes.erase(parenthesiesIndexes.begin() + start);
+
+
 				if (parenthesies.size() % 3 == 0) {
-					parenthesies.erase(parenthesies.begin() + parenthesies[start]);
-					parenthesies.erase(parenthesies.begin() + parenthesies[start + 1]);
-					parenthesies.erase(parenthesies.begin() + parenthesies[start + 2]);
+					parenthesies.erase(parenthesies.begin() + 0);
+					parenthesies.erase(parenthesies.begin() + 0);
+					parenthesies.erase(parenthesies.begin() + 0);
 				}
 				else {
 					for (int j = start + 1;j < parenthesies.size() - 2;j++) {
 						parenthesies.erase(parenthesies.begin() + j);
 					}
-					parenthesies.erase(parenthesies.begin() + parenthesies[start]);
-					parenthesies.erase(parenthesies.begin() + parenthesies[start + 1]);
+					parenthesies.erase(parenthesies.begin() + start);
+					parenthesies.erase(parenthesies.begin() + start + 1);
 				}
 				
 				change = true;
