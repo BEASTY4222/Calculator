@@ -187,30 +187,38 @@ void CalculatorClass::updateEquation(const std::string& newEquation, bool equals
 }
 
 void CalculatorClass::getNumbers(const std::string & equation) {
-	bool change = false;
-	bool dot = false;
-	int modifier = 10;
 	double number = 0;
-	for (int i = 0; i <= equation.length();i++) {
-		if (equation[i] >= '0' && equation[i] <= '9') {
-			number = number * 10 + (equation[i] - '0');
+	bool isDecimal = false;
+	double decimalPlace = 0.1;
 
-			if (dot) {
-				number = number / (modifier * i);
+	for (char c : equation) {
+		if (isdigit(c)) {
+			if (isDecimal) {
+				number += (c - '0') * decimalPlace;
+				decimalPlace *= 0.1;
 			}
-			
-			change = true;
+			else {
+				number = number * 10 + (c - '0');
+			}
 		}
-		else if (equation[i] == '.') {
-			dot = true;
-			continue;
+		else if (c == '.') {
+			isDecimal = true;
 		}
-		else if (change) {
-			numbers.push_back(number);
-			number = 0;
-			change = false;
+		else {
+			// Non-digit and non-decimal point: push number if any
+			if (isDecimal || number != 0) {
+				numbers.push_back(number);
+				number = 0;
+				isDecimal = false;
+				decimalPlace = 0.1;
+			}
 		}
 	}
+	// Push the last number if the string ends with a number
+	if (isDecimal || number != 0) {
+		numbers.push_back(number);
+	}
+
 }
 
 int CalculatorClass::getIndexFromEquation(const char& target) {
@@ -225,10 +233,14 @@ void CalculatorClass::handleMiscKeys() {
 			numbers.clear();
 		}
 		else {
-			if (equation.back() == '(')
+			if (equation.back() == '('){
 				parenthesiesIndexes.pop_front();
-			else if (equation.back() == ')')
+				parenthesies.pop_front();
+			}
+			else if (equation.back() == ')'){
 				parenthesiesIndexes.pop_back();
+				parenthesies.pop_back();
+			}
 			else if(equation.back() == '+' || equation.back() == '-' || equation.back() == '*' || equation.back() == '/')
 				operations.pop_back();
 
@@ -277,12 +289,13 @@ bool CalculatorClass::parenthesiesMathing() {
 	for (size_t i = 0; i < operationsSize; i++) {
 		bool change = false;
 		if (parenthesiesIndexes.size() % 2 == 0 && parenthesiesIndexes.size() >= 2) {
-			for (int start = (parenthesiesIndexes.size() / parenthesiesIndexes.size()) - 1;!change;start++) {
+			for (int start = (parenthesiesIndexes.size() / parenthesiesIndexes.size()) - 1;start < (parenthesiesIndexes - (parenthesiesIndexes[i] - 1));start++) {
+				std::deque<double> nums;
 
-				int num1 = numbers[parenthesiesIndexes[start] - 1];
+				double num1 = numbers[parenthesiesIndexes[start] - 1];
 				numbers.erase(numbers.begin() + parenthesiesIndexes[start] - 1);
 
-				int num2 = numbers[parenthesiesIndexes.back() / parenthesies.size() / 2];
+				double num2 = numbers[parenthesiesIndexes.back() / parenthesies.size() / 2];
 				numbers.erase(numbers.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
 
 				switch (parenthesies[start + 1]){
@@ -313,26 +326,24 @@ bool CalculatorClass::parenthesiesMathing() {
 
 				}
 				
-				numbers.push_back(resultDouble);
-
-				parenthesiesIndexes.erase(parenthesiesIndexes.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
-				parenthesiesIndexes.erase(parenthesiesIndexes.begin() + start);
-
-
-				if (parenthesies.size() % 3 == 0) {
-					parenthesies.erase(parenthesies.begin() + 0);
-					parenthesies.erase(parenthesies.begin() + 0);
-					parenthesies.erase(parenthesies.begin() + 0);
-				}
-				else {
-					for (int j = start + 1;j < parenthesies.size() - 2;j++) {
-						parenthesies.erase(parenthesies.begin() + j);
-					}
-					parenthesies.erase(parenthesies.begin() + start);
-					parenthesies.erase(parenthesies.begin() + start + 1);
-				}
-				
 				change = true;
+			}
+			numbers.push_back(resultDouble);
+
+			parenthesiesIndexes.erase(parenthesiesIndexes.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
+			parenthesiesIndexes.erase(parenthesiesIndexes.begin() + i);
+
+			if (parenthesies.size() % 3 == 0) {
+				parenthesies.erase(parenthesies.begin() + 0);
+				parenthesies.erase(parenthesies.begin() + 0);
+				parenthesies.erase(parenthesies.begin() + 0);
+			}
+			else {
+				for (int j = i + 1;j < parenthesies.size() - 2;j++) {
+					parenthesies.erase(parenthesies.begin() + j);
+				}
+				parenthesies.erase(parenthesies.begin() + i);
+				parenthesies.erase(parenthesies.begin() + i + 1);
 			}
 		}
 		else {

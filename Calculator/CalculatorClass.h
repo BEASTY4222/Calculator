@@ -26,13 +26,14 @@ public:
 
 	void updateEquation(const std::string& newEquation, bool equalsTriggerd); 
 
-	void getNumbers(const std::string &equation);
 
 	int getIndexFromEquation(const char & target);
 
 	void handleMiscKeys();
 
 	double mathing();
+
+	void getNumbers(const std::string& equation);
 
 	bool parenthesiesMathing();
 };
