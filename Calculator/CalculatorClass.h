@@ -2,6 +2,8 @@
 #include "raylib.h"
 #include "Button.h"
 #include <string>
+#include <algorithm>
+#include <deque>
 
 
 class CalculatorClass {
@@ -26,8 +28,9 @@ public:
 
 	void updateEquation(const std::string& newEquation, bool equalsTriggerd); 
 
+	int getLatestIndexFromEquation(const char & target);
 
-	int getIndexFromEquation(const char & target);
+	int getSpacesSinceLast(int start);
 
 	void handleMiscKeys();
 

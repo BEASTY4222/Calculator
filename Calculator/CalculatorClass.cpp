@@ -105,7 +105,7 @@ void CalculatorClass::handleButtonClicks() {
 	}if (buttons[11].isClicked()) {
 		if (!parenthesies.empty()) {
 			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				parenthesies.push_back('+');
+				parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') + 1, '-');
 			}
 		}
 
@@ -114,7 +114,7 @@ void CalculatorClass::handleButtonClicks() {
 	}if (buttons[13].isClicked()) {
 		if (!parenthesies.empty()) {
 			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				parenthesies.push_back('+');
+				parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') + 1,'*');
 			}
 		}
 		updateEquation(std::string(1, static_cast<char>(buttons[13].getSymbol())), false);
@@ -122,7 +122,7 @@ void CalculatorClass::handleButtonClicks() {
 	}if (buttons[14].isClicked()) {
 		if (!parenthesies.empty()) {
 			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				parenthesies.push_back('+');
+				parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') + 1, '/');
 			}
 		}
 		updateEquation(std::string(1, static_cast<char>(buttons[14].getSymbol())), false);
@@ -132,13 +132,23 @@ void CalculatorClass::handleButtonClicks() {
 		numbers.clear();
 	}if (buttons[16].isClicked()) {
 		updateEquation(")", false);
-		parenthesiesIndexes.push_back(getIndexFromEquation(')'));
+		parenthesiesIndexes.push_back(getLatestIndexFromEquation(')'));
 		parenthesies.push_back(')');
 
 	}if (buttons[17].isClicked()) {
-			updateEquation("(", false);
-			parenthesiesIndexes.push_front(getIndexFromEquation('('));
+			if (parenthesiesIndexes.empty()) {
+				parenthesiesIndexes.push_back(getLatestIndexFromEquation('('));
+			}
+			else {
+				int previousOpeningParethesiesIndex = getLatestIndexFromEquation('(');
+				
+				std::deque<int>::iterator previousOpeningParethesies = 
+					std::find(parenthesiesIndexes.begin(), parenthesiesIndexes.end(),previousOpeningParethesiesIndex);
+
+				parenthesiesIndexes.insert(previousOpeningParethesies + 1, previousOpeningParethesiesIndex + getSpacesSinceLast(previousOpeningParethesiesIndex));
+			}
 			parenthesies.push_front('(');
+			updateEquation("(", false);
 
 	}if (buttons[20].isClicked()) {
 		updateEquation(".", false);
@@ -221,9 +231,19 @@ void CalculatorClass::getNumbers(const std::string & equation) {
 
 }
 
-int CalculatorClass::getIndexFromEquation(const char& target) {
+int CalculatorClass::getLatestIndexFromEquation(const char& target) {
+	std::deque<int> indexes;
 	for (int i = 0;i < equation.length();i++)
-		if (equation[i] == target) return i;
+		if (equation[i] == target) indexes.push_back(i);
+	if (indexes.empty()) return 0;
+	else return indexes.back();
+
+}
+
+int CalculatorClass::getSpacesSinceLast(int start) {
+	int spaceBetween = 0;
+	while (start != equation.length()) { start++; spaceBetween++; }
+	return spaceBetween - 1;
 }
 
 void CalculatorClass::handleMiscKeys() {
@@ -289,13 +309,38 @@ bool CalculatorClass::parenthesiesMathing() {
 	for (size_t i = 0; i < operationsSize; i++) {
 		bool change = false;
 		if (parenthesiesIndexes.size() % 2 == 0 && parenthesiesIndexes.size() >= 2) {
-			for (int start = (parenthesiesIndexes.size() / parenthesiesIndexes.size()) - 1;start < (parenthesiesIndexes - (parenthesiesIndexes[i] - 1));start++) {
-				std::deque<double> nums;
+			int currOpenningParenthesies = parenthesies.size() / 2;
+			while (parenthesies[currOpenningParenthesies] != '(') currOpenningParenthesies--;
 
-				double num1 = numbers[parenthesiesIndexes[start] - 1];
-				numbers.erase(numbers.begin() + parenthesiesIndexes[start] - 1);
+			int currClosingParenthesies = parenthesies.size() / 2;
+			while (parenthesies[currClosingParenthesies] != ')') currClosingParenthesies++;
 
-				double num2 = numbers[parenthesiesIndexes.back() / parenthesies.size() / 2];
+			int numberOfOperatorsInParenthesies = (currClosingParenthesies - currOpenningParenthesies) - 1;
+
+
+
+			int currMiddleInParenthesiesIndexes = parenthesiesIndexes.size() / 2;
+			int digitsInParenthesies = ((parenthesiesIndexes[currMiddleInParenthesiesIndexes] - parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1] - numberOfOperatorsInParenthesies)) - 1;
+			for (int start = (parenthesiesIndexes.size() / parenthesiesIndexes.size()) - 1;start < digitsInParenthesies;start++) {
+
+				double num1;
+				if (parenthesiesIndexes[start] - 1 < 0) {
+					num1 = numbers[parenthesiesIndexes[start]];
+					numbers.erase(numbers.begin() + parenthesiesIndexes[start]);
+				}
+				else {
+					num1 = numbers[parenthesiesIndexes[start] - 1];
+					numbers.erase(numbers.begin() + parenthesiesIndexes[start] - 1);
+				}
+					
+
+				double num2;
+				if(true)
+					num2 = numbers[parenthesiesIndexes.back() / parenthesies.size() / 2];
+
+				else
+					num2 = numbers[parenthesiesIndexes.back() / parenthesies.size() / 2];
+
 				numbers.erase(numbers.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
 
 				switch (parenthesies[start + 1]){
