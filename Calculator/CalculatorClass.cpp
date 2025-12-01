@@ -137,7 +137,7 @@ void CalculatorClass::handleButtonClicks() {
 
 	}if (buttons[17].isClicked()) {
 			if (parenthesiesIndexes.empty()) {
-				parenthesiesIndexes.push_back(getLatestIndexFromEquation('('));
+				parenthesiesIndexes.push_back(getSpacesSinceLast(0));
 			}
 			else {
 				int previousOpeningParethesiesIndex = getLatestIndexFromEquation('(');
@@ -243,7 +243,7 @@ int CalculatorClass::getLatestIndexFromEquation(const char& target) {
 int CalculatorClass::getSpacesSinceLast(int start) {
 	int spaceBetween = 0;
 	while (start != equation.length()) { start++; spaceBetween++; }
-	return spaceBetween - 1;
+	return spaceBetween;
 }
 
 void CalculatorClass::handleMiscKeys() {
@@ -326,22 +326,19 @@ bool CalculatorClass::parenthesiesMathing() {
 				double num1;
 				if (parenthesiesIndexes[start] - 1 < 0) {
 					num1 = numbers[parenthesiesIndexes[start]];
-					numbers.erase(numbers.begin() + parenthesiesIndexes[start]);
+					numbers[parenthesiesIndexes[start]] = 9999999999999999999;
 				}
 				else {
 					num1 = numbers[parenthesiesIndexes[start] - 1];
-					numbers.erase(numbers.begin() + parenthesiesIndexes[start] - 1);
+					numbers[parenthesiesIndexes[start] - 1] = 9999999999999999999;
 				}
-					
 
-				double num2;
-				if(true)
-					num2 = numbers[parenthesiesIndexes.back() / parenthesies.size() / 2];
+				double num2 = numbers[parenthesiesIndexes[start]];
+				numbers.erase(numbers.begin() + parenthesiesIndexes[start] + 1);
 
-				else
-					num2 = numbers[parenthesiesIndexes.back() / parenthesies.size() / 2];
-
-				numbers.erase(numbers.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
+				for (int lazy = 0;lazy < numbers.size();lazy++)
+					if (numbers[lazy] == 9999999999999999999)
+						numbers.erase(numbers.begin() + lazy);
 
 				switch (parenthesies[start + 1]){
 					case '+':
