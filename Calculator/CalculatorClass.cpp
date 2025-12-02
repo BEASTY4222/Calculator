@@ -307,7 +307,7 @@ bool CalculatorClass::parenthesiesMathing() {
 	double resultDouble = 0;
 	int operationsSize = operations.size();
 	for (size_t i = 0; i < operationsSize; i++) {
-		bool change = false;
+		bool operationsInParethsies = true;
 		if (parenthesiesIndexes.size() % 2 == 0 && parenthesiesIndexes.size() >= 2) {
 			int currOpenningParenthesies = parenthesies.size() / 2;
 			while (parenthesies[currOpenningParenthesies] != '(') currOpenningParenthesies--;
@@ -317,41 +317,58 @@ bool CalculatorClass::parenthesiesMathing() {
 
 			int numberOfOperatorsInParenthesies = (currClosingParenthesies - currOpenningParenthesies) - 1;
 
-
-
 			int currMiddleInParenthesiesIndexes = parenthesiesIndexes.size() / 2;
 			int digitsInParenthesies = ((parenthesiesIndexes[currMiddleInParenthesiesIndexes] - parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1] - numberOfOperatorsInParenthesies)) - 1;
-			for (int start = (parenthesiesIndexes.size() / parenthesiesIndexes.size()) - 1;start < digitsInParenthesies;start++) {
+			for (int start = (parenthesiesIndexes.size() / parenthesiesIndexes.size()) - 1;true;start++) {
 
+				if (parenthesies[currOpenningParenthesies + 1] != '+' && parenthesies[currOpenningParenthesies + 1] != '-' &&
+					parenthesies[currOpenningParenthesies + 1] != '*' && parenthesies[currOpenningParenthesies + 1] != '/') {
+					break;
+				}
+
+				double num2;
 				double num1;
-				if (parenthesiesIndexes[start] - 1 < 0) {
-					num1 = numbers[parenthesiesIndexes[start]];
-					numbers[parenthesiesIndexes[start]] = 9999999999999999999;
+				if (parenthesiesIndexes[0] - 1 < 0) {
+					num1 = numbers[parenthesiesIndexes[0]];
+					numbers[parenthesiesIndexes[0]] = 9999999999999999999; // Dummy value to avoid out-of-bounds
+
+					num2 = numbers[parenthesiesIndexes[0] + 1];
+					numbers.erase(numbers.begin() + parenthesiesIndexes[0] + 1);
 				}
 				else {
 					num1 = numbers[parenthesiesIndexes[start] - 1];
-					numbers[parenthesiesIndexes[start] - 1] = 9999999999999999999;
+					numbers[parenthesiesIndexes[start] - 1] = 9999999999999999999; // Dummy value to avoid out-of-bounds
+
+					num2 = numbers[parenthesiesIndexes[start]];
+					numbers.erase(numbers.begin() + parenthesiesIndexes[start]);
 				}
+				
+					
+				
+				
 
-				double num2 = numbers[parenthesiesIndexes[start]];
-				numbers.erase(numbers.begin() + parenthesiesIndexes[start] + 1);
+				for(int k = 0;k < numbers.size();k++)
+					if(numbers[k] == 9999999999999999999)
+						numbers.erase(numbers.begin() + k);
 
-				for (int lazy = 0;lazy < numbers.size();lazy++)
-					if (numbers[lazy] == 9999999999999999999)
-						numbers.erase(numbers.begin() + lazy);
-
-				switch (parenthesies[start + 1]){
+				switch (parenthesies[currOpenningParenthesies + 1]){
 					case '+':
 						resultDouble = num1 + num2;
-						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[start + 1]));
+						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[currOpenningParenthesies + 1]));
+						parenthesies.erase(parenthesies.begin() + currOpenningParenthesies + 1);
+
 						break;
 					case '-':
 						resultDouble = num1 - num2;
-						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[start + 1]));
+						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[currOpenningParenthesies + 1]));
+						parenthesies.erase(parenthesies.begin() + currOpenningParenthesies + 1);
+
 						break;
 					case '*':
 						resultDouble = num1 * num2;
-						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[start + 1]));
+						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[currOpenningParenthesies + 1]));
+						parenthesies.erase(parenthesies.begin() + currOpenningParenthesies + 1);
+
 						break;
 					case '/':
 						if (num2 != 0) {
@@ -360,25 +377,24 @@ bool CalculatorClass::parenthesiesMathing() {
 						else {
 							resultDouble = 0; // Handle division by zero
 						}
+						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[currOpenningParenthesies + 1]));
+						parenthesies.erase(parenthesies.begin() + currOpenningParenthesies + 1);
 
-						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[start + 1]));
 						break;
 					default:
 						break;
 
 				}
-				
-				change = true;
+				numbers.push_back(resultDouble);
+
 			}
-			numbers.push_back(resultDouble);
 
 			parenthesiesIndexes.erase(parenthesiesIndexes.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
 			parenthesiesIndexes.erase(parenthesiesIndexes.begin() + i);
 
 			if (parenthesies.size() % 3 == 0) {
-				parenthesies.erase(parenthesies.begin() + 0);
-				parenthesies.erase(parenthesies.begin() + 0);
-				parenthesies.erase(parenthesies.begin() + 0);
+				parenthesies.erase(parenthesies.begin() + 0);// (
+				parenthesies.erase(parenthesies.begin() + 0);// )
 			}
 			else {
 				for (int j = i + 1;j < parenthesies.size() - 2;j++) {
