@@ -306,8 +306,8 @@ double CalculatorClass::mathing() {
 bool CalculatorClass::parenthesiesMathing() {
 	double resultDouble = 0;
 	int operationsSize = operations.size();
+
 	for (size_t i = 0; i < operationsSize; i++) {
-		bool operationsInParethsies = true;
 		if (parenthesiesIndexes.size() % 2 == 0 && parenthesiesIndexes.size() >= 2) {
 			int currOpenningParenthesies = parenthesies.size() / 2;
 			while (parenthesies[currOpenningParenthesies] != '(') currOpenningParenthesies--;
@@ -336,11 +336,11 @@ bool CalculatorClass::parenthesiesMathing() {
 					numbers.erase(numbers.begin() + parenthesiesIndexes[0] + 1);
 				}
 				else {
-					num1 = numbers[parenthesiesIndexes[start] - 1];
-					numbers[parenthesiesIndexes[start] - 1] = 9999999999999999999; // Dummy value to avoid out-of-bounds
+					num1 = numbers[parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1] - 1];
+					numbers[parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1] - 1] = 9999999999999999999; // Dummy value to avoid out-of-bounds
 
-					num2 = numbers[parenthesiesIndexes[start]];
-					numbers.erase(numbers.begin() + parenthesiesIndexes[start]);
+					num2 = numbers[parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1]];
+					numbers.erase(numbers.begin() + parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1]);
 				}
 				
 					
@@ -389,8 +389,8 @@ bool CalculatorClass::parenthesiesMathing() {
 
 			}
 
-			parenthesiesIndexes.erase(parenthesiesIndexes.begin() + parenthesiesIndexes.back() / parenthesies.size() / 2);
-			parenthesiesIndexes.erase(parenthesiesIndexes.begin() + i);
+			parenthesiesIndexes.erase(parenthesiesIndexes.begin() + currMiddleInParenthesiesIndexes);
+			parenthesiesIndexes.erase(parenthesiesIndexes.begin() + currMiddleInParenthesiesIndexes - 1);
 
 			if (parenthesies.size() % 3 == 0) {
 				parenthesies.erase(parenthesies.begin() + 0);// (
