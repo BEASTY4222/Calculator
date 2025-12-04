@@ -271,6 +271,10 @@ void CalculatorClass::handleMiscKeys() {
 }
 
 double CalculatorClass::mathing() {
+	if (numbers.size() < 2) {
+		return numbers.front();
+	}
+
 	double resultDouble = 0;
 	int operationsSize = operations.size();
 	for (size_t i = 0; i < operationsSize; i++) {
@@ -385,7 +389,7 @@ bool CalculatorClass::parenthesiesMathing() {
 						break;
 
 				}
-				numbers.push_back(resultDouble);
+				numbers.push_front(resultDouble);
 
 			}
 
@@ -397,11 +401,9 @@ bool CalculatorClass::parenthesiesMathing() {
 				parenthesies.erase(parenthesies.begin() + 0);// )
 			}
 			else {
-				for (int j = i + 1;j < parenthesies.size() - 2;j++) {
+				for (int j = currOpenningParenthesies + 1,count = 0;count != 2;j--,count++) {
 					parenthesies.erase(parenthesies.begin() + j);
 				}
-				parenthesies.erase(parenthesies.begin() + i);
-				parenthesies.erase(parenthesies.begin() + i + 1);
 			}
 		}
 		else {
