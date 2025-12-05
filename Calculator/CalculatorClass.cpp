@@ -95,7 +95,7 @@ void CalculatorClass::handleButtonClicks() {
 	if (buttons[10].isClicked()) {
 		if (!parenthesies.empty()) {
 			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				parenthesies.push_back('+');
+				parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') + 1, '+');
 			}
 		}
 		
@@ -270,6 +270,16 @@ void CalculatorClass::handleMiscKeys() {
 	if (IsKeyPressed(KEY_SPACE)) { updateEquation(" ", false); }
 }
 
+char CalculatorClass::getOperatorToOperate(const int start, const int end, int& index) {
+	for (int i = start; i < end; i++) {
+		if (parenthesies[i] == '*' || parenthesies[i] == '/') {
+			index = i;
+			return parenthesies[i];
+		}
+	}
+	return parenthesies[start + 1];
+}
+
 double CalculatorClass::mathing() {
 	if (numbers.size() < 2) {
 		return numbers.front();
@@ -323,15 +333,18 @@ bool CalculatorClass::parenthesiesMathing() {
 
 			int currMiddleInParenthesiesIndexes = parenthesiesIndexes.size() / 2;
 			int digitsInParenthesies = ((parenthesiesIndexes[currMiddleInParenthesiesIndexes] - parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1] - numberOfOperatorsInParenthesies)) - 1;
-			for (int start = (parenthesiesIndexes.size() / parenthesiesIndexes.size()) - 1;true;start++) {
+			for (int start = parenthesiesIndexes.size() / 2;true;start++) {
 
 				if (parenthesies[currOpenningParenthesies + 1] != '+' && parenthesies[currOpenningParenthesies + 1] != '-' &&
 					parenthesies[currOpenningParenthesies + 1] != '*' && parenthesies[currOpenningParenthesies + 1] != '/') {
 					break;
 				}
 
+				int index;
 				double num2;
 				double num1;
+				/*
+				
 				if (parenthesiesIndexes[0] - 1 < 0) {
 					num1 = numbers[parenthesiesIndexes[0]];
 					numbers[parenthesiesIndexes[0]] = 9999999999999999999; // Dummy value to avoid out-of-bounds
@@ -346,16 +359,28 @@ bool CalculatorClass::parenthesiesMathing() {
 					num2 = numbers[parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1]];
 					numbers.erase(numbers.begin() + parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1]);
 				}
+
+				for(int k = 0;k < numbers.size();k++)
+					if(numbers[k] == 9999999999999999999)
+						numbers.erase(numbers.begin() + k);
+				*/
+				
 				
 					
 				
 				
 
-				for(int k = 0;k < numbers.size();k++)
-					if(numbers[k] == 9999999999999999999)
-						numbers.erase(numbers.begin() + k);
+				
 
-				switch (parenthesies[currOpenningParenthesies + 1]){
+				char operationChar = getOperatorToOperate(currOpenningParenthesies, currClosingParenthesies,index);
+
+				num1 = numbers[index];
+				num2 = numbers[index + 1];
+
+				numbers.erase(numbers.begin() + index + 1);
+				numbers.erase(numbers.begin() + index);
+
+				switch (operationChar){
 					case '+':
 						resultDouble = num1 + num2;
 						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[currOpenningParenthesies + 1]));

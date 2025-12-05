@@ -34,6 +34,8 @@ public:
 
 	void handleMiscKeys();
 
+	char getOperatorToOperate(const int start, const int end, int &index);
+
 	double mathing();
 
 	void getNumbers(const std::string& equation);
