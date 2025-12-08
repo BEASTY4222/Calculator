@@ -25,7 +25,6 @@ CalculatorClass::CalculatorClass() {
 
 
 
-
 	firstParenthesis = true;
 	complexMode = false;
 }
@@ -95,7 +94,13 @@ void CalculatorClass::handleButtonClicks() {
 	if (buttons[10].isClicked()) {
 		if (!parenthesies.empty()) {
 			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') + 1, '+');
+				if (parenthesies.size() == 1) {
+					parenthesies.push_back('+');
+				}
+				else {
+					parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') - 1, '+');
+
+				}
 			}
 		}
 		
@@ -105,7 +110,13 @@ void CalculatorClass::handleButtonClicks() {
 	}if (buttons[11].isClicked()) {
 		if (!parenthesies.empty()) {
 			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') + 1, '-');
+				if (parenthesies.size() == 1) {
+					parenthesies.push_back('-');
+				}
+				else {
+					parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') - 1, '-');
+
+				}
 			}
 		}
 
@@ -114,7 +125,13 @@ void CalculatorClass::handleButtonClicks() {
 	}if (buttons[13].isClicked()) {
 		if (!parenthesies.empty()) {
 			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') + 1,'*');
+				if (parenthesies.size() == 1) {
+					parenthesies.push_back('*');
+				}
+				else {
+					parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') - 1, '*');
+
+				}
 			}
 		}
 		updateEquation(std::string(1, static_cast<char>(buttons[13].getSymbol())), false);
@@ -122,7 +139,13 @@ void CalculatorClass::handleButtonClicks() {
 	}if (buttons[14].isClicked()) {
 		if (!parenthesies.empty()) {
 			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') + 1, '/');
+				if (parenthesies.size() == 1) {
+					parenthesies.push_back('/');
+				}
+				else {
+					parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') - 1, '/');
+
+				}
 			}
 		}
 		updateEquation(std::string(1, static_cast<char>(buttons[14].getSymbol())), false);
@@ -332,6 +355,7 @@ bool CalculatorClass::parenthesiesMathing() {
 			int numberOfOperatorsInParenthesies = (currClosingParenthesies - currOpenningParenthesies) - 1;
 
 			int currMiddleInParenthesiesIndexes = parenthesiesIndexes.size() / 2;
+
 			int digitsInParenthesies = ((parenthesiesIndexes[currMiddleInParenthesiesIndexes] - parenthesiesIndexes[currMiddleInParenthesiesIndexes - 1] - numberOfOperatorsInParenthesies)) - 1;
 			for (int start = parenthesiesIndexes.size() / 2;true;start++) {
 
@@ -374,11 +398,21 @@ bool CalculatorClass::parenthesiesMathing() {
 
 				char operationChar = getOperatorToOperate(currOpenningParenthesies, currClosingParenthesies,index);
 
-				num1 = numbers[index];
-				num2 = numbers[index + 1];
+				if (numbers.size() < 4) {
+					num1 = numbers[index];
+					num2 = numbers[index + 1];
 
-				numbers.erase(numbers.begin() + index + 1);
-				numbers.erase(numbers.begin() + index);
+					numbers.erase(numbers.begin() + index + 1);
+					numbers.erase(numbers.begin() + index);
+				}
+				else {
+					num1 = numbers[index + 1];
+					num2 = numbers[index + 2];
+
+					numbers.erase(numbers.begin() + index + 2);
+					numbers.erase(numbers.begin() + index + 1);
+
+				}
 
 				switch (operationChar){
 					case '+':
@@ -414,7 +448,7 @@ bool CalculatorClass::parenthesiesMathing() {
 						break;
 
 				}
-				numbers.push_front(resultDouble);
+				numbers.insert(numbers.begin() + currMiddleInParenthesiesIndexes, resultDouble);
 
 			}
 
