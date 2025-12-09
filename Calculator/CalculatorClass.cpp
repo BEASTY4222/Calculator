@@ -98,7 +98,7 @@ void CalculatorClass::handleButtonClicks() {
 					parenthesies.push_back('+');
 				}
 				else {
-					parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') - 1, '+');
+					parenthesies.push_back('+');
 
 				}
 			}
@@ -114,7 +114,7 @@ void CalculatorClass::handleButtonClicks() {
 					parenthesies.push_back('-');
 				}
 				else {
-					parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') - 1, '-');
+					parenthesies.push_back('-');
 
 				}
 			}
@@ -129,7 +129,7 @@ void CalculatorClass::handleButtonClicks() {
 					parenthesies.push_back('*');
 				}
 				else {
-					parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') - 1, '*');
+					parenthesies.push_back('*');
 
 				}
 			}
@@ -143,7 +143,7 @@ void CalculatorClass::handleButtonClicks() {
 					parenthesies.push_back('/');
 				}
 				else {
-					parenthesies.insert(parenthesies.begin() + getLatestIndexFromEquation('(') - 1, '/');
+					parenthesies.push_back('/');
 
 				}
 			}
@@ -269,6 +269,8 @@ int CalculatorClass::getSpacesSinceLast(int start) {
 	return spaceBetween;
 }
 
+
+
 void CalculatorClass::handleMiscKeys() {
 	if (equation.length() > 0 && IsKeyPressed(KEY_BACKSPACE)) {
 		if (numbers.size() == 1) {
@@ -294,13 +296,20 @@ void CalculatorClass::handleMiscKeys() {
 }
 
 char CalculatorClass::getOperatorToOperate(const int start, const int end, int& index) {
+	char operation = parenthesies[start + 1];
+
 	for (int i = start; i < end; i++) {
 		if (parenthesies[i] == '*' || parenthesies[i] == '/') {
 			index = i;
-			return parenthesies[i];
+			operation = parenthesies[i];
+			parenthesies.erase(parenthesies.begin() + i);
+			return operation;
 		}
 	}
-	return parenthesies[start + 1];
+
+	index = start + 1;
+	parenthesies.erase(parenthesies.begin() + 1);// for example '+' this will be deleted
+	return operation;
 }
 
 double CalculatorClass::mathing() {
@@ -398,39 +407,26 @@ bool CalculatorClass::parenthesiesMathing() {
 
 				char operationChar = getOperatorToOperate(currOpenningParenthesies, currClosingParenthesies,index);
 
-				if (numbers.size() < 4) {
-					num1 = numbers[index];
-					num2 = numbers[index + 1];
+				num1 = numbers[index];
+				num2 = numbers[index + 1];
 
-					numbers.erase(numbers.begin() + index + 1);
-					numbers.erase(numbers.begin() + index);
-				}
-				else {
-					num1 = numbers[index + 1];
-					num2 = numbers[index + 2];
-
-					numbers.erase(numbers.begin() + index + 2);
-					numbers.erase(numbers.begin() + index + 1);
-
-				}
+				numbers.erase(numbers.begin() + index + 1);
+				numbers.erase(numbers.begin() + index);
 
 				switch (operationChar){
 					case '+':
 						resultDouble = num1 + num2;
-						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[currOpenningParenthesies + 1]));
-						parenthesies.erase(parenthesies.begin() + currOpenningParenthesies + 1);
+						operations.erase(std::find(operations.begin(), operations.end(), '+'));
 
 						break;
 					case '-':
 						resultDouble = num1 - num2;
-						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[currOpenningParenthesies + 1]));
-						parenthesies.erase(parenthesies.begin() + currOpenningParenthesies + 1);
+						operations.erase(std::find(operations.begin(), operations.end(), '-'));
 
 						break;
 					case '*':
 						resultDouble = num1 * num2;
-						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[currOpenningParenthesies + 1]));
-						parenthesies.erase(parenthesies.begin() + currOpenningParenthesies + 1);
+						operations.erase(std::find(operations.begin(), operations.end(), '*'));
 
 						break;
 					case '/':
@@ -440,8 +436,7 @@ bool CalculatorClass::parenthesiesMathing() {
 						else {
 							resultDouble = 0; // Handle division by zero
 						}
-						operations.erase(std::find(operations.begin(), operations.end(), parenthesies[currOpenningParenthesies + 1]));
-						parenthesies.erase(parenthesies.begin() + currOpenningParenthesies + 1);
+						operations.erase(std::find(operations.begin(), operations.end(), '/'));
 
 						break;
 					default:
