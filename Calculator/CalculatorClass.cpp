@@ -1,27 +1,34 @@
 #include "CalculatorClass.h"
 
 CalculatorClass::CalculatorClass() {
-	buttons[0] = Button(30, 500, 1);
-	buttons[1] = Button(120, 500, 2);
-	buttons[2] = Button(210, 500, 3);
-	buttons[3] = Button(30, 410, 4);
-	buttons[4] = Button(120, 410, 5);
-	buttons[5] = Button(210, 410, 6);
-	buttons[6] = Button(30, 320, 7);
-	buttons[7] = Button(120, 320, 8);
-	buttons[8] = Button(210, 320, 9);
-	buttons[9] = Button(300, 590, 0);
-	buttons[10] = Button(300, 500, '+');
-	buttons[11] = Button(300, 410, '-');
-	buttons[12] = Button(300, 320, '=');
-	buttons[13] = Button(120, 590, '*');
-	buttons[14] = Button(210, 590, '/');
-	buttons[15] = Button(30, 590, 'C');
-	buttons[16] = Button(120, 680, ')');
-	buttons[17] = Button(30, 680, '(');
-	buttons[18] = Button(300, 680, "complex \n  mode", 80, 80);
-	buttons[19] = Button(30, 500, "sin", 80, 80);
-	buttons[20] = Button(210,680,'.');
+	buttons[0] = Button(30.0f, 500.0f, 1);
+	buttons[1] = Button(120.0f, 500.0f, 2);
+	buttons[2] = Button(210.0f, 500.0f, 3);
+	buttons[3] = Button(30.0f, 410.0f, 4);
+	buttons[4] = Button(120.0f, 410.0f, 5);
+	buttons[5] = Button(210.0f, 410.0f, 6);
+	buttons[6] = Button(30.0f, 320.0f, 7);
+	buttons[7] = Button(120.0f, 320.0f, 8);
+	buttons[8] = Button(210.0f, 320.0f, 9);
+	buttons[9] = Button(300.0f, 590.0f, 0);
+	buttons[10] = Button(300.0f, 500.0f, '+');
+	buttons[11] = Button(300.0f, 410.0f, '-');
+	buttons[12] = Button(300.0f, 320.0f, '=');
+	buttons[13] = Button(120.0f, 590.0f, '*');
+	buttons[14] = Button(210.0f, 590.0f, '/');
+	buttons[15] = Button(30.0f, 590.0f, 'C');
+	buttons[16] = Button(120.0f, 680.0f, ')');
+	buttons[17] = Button(30.0f, 680.0f, '(');
+	buttons[18] = Button(300.0f, 680.0f, "complex \n  mode", 80.0f, 80.0f);
+	buttons[19] = Button(30.0f, 500.0f, "sin", 80.0f, 80.0f);
+	buttons[20] = Button(210.0f, 680.0f, '.');
+
+	buttons[21] = Button(120.0f, 500.0f, "cos", 80.0f, 80.0f);
+	buttons[22] = Button(210.0f, 500.0f, "tan", 80.0f, 80.0f);
+	buttons[23] = Button(30.0f, 320.0f, "log", 80.0f, 80.0f);
+	buttons[24] = Button(300.0f, 500.0f, "rad", 80.0f, 80.0f);
+	buttons[25] = Button(120.0f, 410.0f, 'e');
+	buttons[26] = Button(210.0f, 410.0f, "pi", 80.0f, 80.0f);
 
 
 
@@ -31,8 +38,15 @@ CalculatorClass::CalculatorClass() {
 
 void CalculatorClass::drawButtons() {
 	if (complexMode) {
+		buttons[15].drawButton();
 		buttons[18].drawButton();
 		buttons[19].drawButton();
+		buttons[21].drawButton();
+		buttons[22].drawButton();
+		buttons[23].drawButton();
+		buttons[24].drawButton();
+		buttons[25].drawButton();
+		buttons[26].drawButton();
 	}
 	else {
 		buttons[0].drawButton();
@@ -69,97 +83,132 @@ void CalculatorClass::showEquation() {
 
 void CalculatorClass::handleButtonClicks() {
 	// numbers
-	if (buttons[0].isClicked() || IsKeyPressed(KEY_ONE)) {
-		updateEquation(std::to_string(buttons[0].getSymbol()), false);
- 	}if (buttons[1].isClicked() || IsKeyPressed(KEY_TWO)) {
-		updateEquation(std::to_string(buttons[1].getSymbol()), false);
-	}if (buttons[2].isClicked() || IsKeyPressed(KEY_THREE)) {
-		updateEquation(std::to_string(buttons[2].getSymbol()), false);
-	}if (buttons[3].isClicked() || IsKeyPressed(KEY_FOUR)) {
-		updateEquation(std::to_string(buttons[3].getSymbol()), false);
-	}if (buttons[4].isClicked() || IsKeyPressed(KEY_FIVE)) {
-		updateEquation(std::to_string(buttons[4].getSymbol()), false);
-	}if (buttons[5].isClicked() || IsKeyPressed(KEY_SIX)) {
-		updateEquation(std::to_string(buttons[5].getSymbol()), false);
-	}if (buttons[6].isClicked() || IsKeyPressed(KEY_SEVEN)) {
-		updateEquation(std::to_string(buttons[6].getSymbol()), false);
-	}if (buttons[7].isClicked() || IsKeyPressed(KEY_EIGHT)) {
-		updateEquation(std::to_string(buttons[7].getSymbol()), false);
-	}if (buttons[8].isClicked() || IsKeyPressed(KEY_NINE)) {
-		updateEquation(std::to_string(buttons[8].getSymbol()),false);
-	}if (buttons[9].isClicked() || IsKeyPressed(KEY_ZERO)) {
-		updateEquation(std::to_string(buttons[9].getSymbol()), false);
+	if (!complexMode) {
+		if (buttons[0].isClicked() || IsKeyPressed(KEY_ONE)) {
+			updateEquation(std::to_string(buttons[0].getSymbol()), false);
+		}if (buttons[1].isClicked() || IsKeyPressed(KEY_TWO)) {
+			updateEquation(std::to_string(buttons[1].getSymbol()), false);
+		}if (buttons[2].isClicked() || IsKeyPressed(KEY_THREE)) {
+			updateEquation(std::to_string(buttons[2].getSymbol()), false);
+		}if (buttons[3].isClicked() || IsKeyPressed(KEY_FOUR)) {
+			updateEquation(std::to_string(buttons[3].getSymbol()), false);
+		}if (buttons[4].isClicked() || IsKeyPressed(KEY_FIVE)) {
+			updateEquation(std::to_string(buttons[4].getSymbol()), false);
+		}if (buttons[5].isClicked() || IsKeyPressed(KEY_SIX)) {
+			updateEquation(std::to_string(buttons[5].getSymbol()), false);
+		}if (buttons[6].isClicked() || IsKeyPressed(KEY_SEVEN)) {
+			updateEquation(std::to_string(buttons[6].getSymbol()), false);
+		}if (buttons[7].isClicked() || IsKeyPressed(KEY_EIGHT)) {
+			updateEquation(std::to_string(buttons[7].getSymbol()), false);
+		}if (buttons[8].isClicked() || IsKeyPressed(KEY_NINE)) {
+			updateEquation(std::to_string(buttons[8].getSymbol()), false);
+		}if (buttons[9].isClicked() || IsKeyPressed(KEY_ZERO)) {
+			updateEquation(std::to_string(buttons[9].getSymbol()), false);
+		}
+
+		// operators
+		if (buttons[10].isClicked()) {
+			if (!parenthesies.empty()) {
+				if (parenthesies.front() == '(' && parenthesies.back() != ')') {
+					if (parenthesies.size() == 1) {
+						parenthesies.push_back('+');
+					}
+					else {
+						parenthesies.push_back('+');
+
+					}
+				}
+			}
+
+			updateEquation(std::string(1, static_cast<char>(buttons[10].getSymbol())), false);
+			operations.push_back(static_cast<char>(buttons[10].getSymbol()));
+
+		}if (buttons[11].isClicked()) {
+			if (!parenthesies.empty()) {
+				if (parenthesies.front() == '(' && parenthesies.back() != ')') {
+					if (parenthesies.size() == 1) {
+						parenthesies.push_back('-');
+					}
+					else {
+						parenthesies.push_back('-');
+
+					}
+				}
+			}
+
+			updateEquation(std::string(1, static_cast<char>(buttons[11].getSymbol())), false);
+			operations.push_back(static_cast<char>(buttons[11].getSymbol()));
+		}if (buttons[13].isClicked()) {
+			if (!parenthesies.empty()) {
+				if (parenthesies.front() == '(' && parenthesies.back() != ')') {
+					if (parenthesies.size() == 1) {
+						parenthesies.push_back('*');
+					}
+					else {
+						parenthesies.push_back('*');
+
+					}
+				}
+			}
+			updateEquation(std::string(1, static_cast<char>(buttons[13].getSymbol())), false);
+			operations.push_back(static_cast<char>(buttons[13].getSymbol()));
+		}if (buttons[14].isClicked()) {
+			if (!parenthesies.empty()) {
+				if (parenthesies.front() == '(' && parenthesies.back() != ')') {
+					if (parenthesies.size() == 1) {
+						parenthesies.push_back('/');
+					}
+					else {
+						parenthesies.push_back('/');
+
+					}
+				}
+			}
+			updateEquation(std::string(1, static_cast<char>(buttons[14].getSymbol())), false);
+			operations.push_back(static_cast<char>(buttons[14].getSymbol()));
+		}
 	}
+	else {
+		if (buttons[18].isClicked()) {
 
-	// operators
-	if (buttons[10].isClicked()) {
-		if (!parenthesies.empty()) {
-			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				if (parenthesies.size() == 1) {
-					parenthesies.push_back('+');
-				}
-				else {
-					parenthesies.push_back('+');
-
-				}
-			}
 		}
-		
-		updateEquation(std::string(1, static_cast<char>(buttons[10].getSymbol())), false);
-		operations.push_back(static_cast<char>(buttons[10].getSymbol()));
-		
-	}if (buttons[11].isClicked()) {
-		if (!parenthesies.empty()) {
-			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				if (parenthesies.size() == 1) {
-					parenthesies.push_back('-');
-				}
-				else {
-					parenthesies.push_back('-');
+		if (buttons[19].isClicked()) {
 
-				}
-			}
 		}
+		if (buttons[21].isClicked()) {
 
-		updateEquation(std::string(1, static_cast<char>(buttons[11].getSymbol())), false);
-		operations.push_back(static_cast<char>(buttons[11].getSymbol()));
-	}if (buttons[13].isClicked()) {
-		if (!parenthesies.empty()) {
-			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				if (parenthesies.size() == 1) {
-					parenthesies.push_back('*');
-				}
-				else {
-					parenthesies.push_back('*');
-
-				}
-			}
 		}
-		updateEquation(std::string(1, static_cast<char>(buttons[13].getSymbol())), false);
-		operations.push_back(static_cast<char>(buttons[13].getSymbol()));
-	}if (buttons[14].isClicked()) {
-		if (!parenthesies.empty()) {
-			if (parenthesies.front() == '(' && parenthesies.back() != ')') {
-				if (parenthesies.size() == 1) {
-					parenthesies.push_back('/');
-				}
-				else {
-					parenthesies.push_back('/');
+		if (buttons[22].isClicked()) {
 
-				}
-			}
 		}
-		updateEquation(std::string(1, static_cast<char>(buttons[14].getSymbol())), false);
-		operations.push_back(static_cast<char>(buttons[14].getSymbol()));
-	}if (buttons[15].isClicked()) {
+		if (buttons[23].isClicked()) {
+
+		}
+		if (buttons[24].isClicked()) {
+
+		}
+		if (buttons[25].isClicked()) {
+			updateEquation(std::to_string(buttons[25].getSymbol()), false);
+		}
+		if (buttons[26].isClicked()) {
+			updateEquation(std::to_string(buttons[26].getSymbol()), false);
+
+		}
+	}
+	// clear
+	if (buttons[15].isClicked()) {
 		updateEquation("",true);
 		numbers.clear();
-	}if (buttons[16].isClicked()) {
+	}
+	// closing braket
+	if (buttons[16].isClicked()) {
 		updateEquation(")", false);
 		parenthesiesIndexes.push_back(getLatestIndexFromEquation(')'));
 		parenthesies.push_back(')');
 
-	}if (buttons[17].isClicked()) {
+	}
+	// opening braket
+	if (buttons[17].isClicked()) {
 			if (parenthesiesIndexes.empty()) {
 				parenthesiesIndexes.push_back(getSpacesSinceLast(0));
 			}
@@ -174,10 +223,13 @@ void CalculatorClass::handleButtonClicks() {
 			parenthesies.push_front('(');
 			updateEquation("(", false);
 
-	}if (buttons[20].isClicked()) {
+	}
+	// decimal point
+	if (buttons[20].isClicked()) {
 		updateEquation(".", false);
 	}
 
+	// equals
 	if (buttons[12].isClicked()) {
 		getNumbers(equation);
 
@@ -203,12 +255,10 @@ void CalculatorClass::handleButtonClicks() {
 		
 	}
 
+	// enter complex mode
 	if (buttons[18].isClicked()) {
 		complexMode = !complexMode;
-
 	}
-
-
 
 	handleMiscKeys();
 }
