@@ -37,7 +37,7 @@ public:
 		DrawRectangleRec(button, buttonColors.first);
 		DrawRectangleLinesEx(button, 5, GREEN);
 		if (buttonSymbol.length() > 5) {
-			DrawText(buttonSymbol.c_str(), button.x + 15, button.y + 30, 23, buttonColors.second);
+			DrawText(buttonSymbol.c_str(), button.x + 10, button.y + 20, 18, buttonColors.second);
 		}
 		else {
 			if (buttonSymbol[0] >= 0 && buttonSymbol[0] <= 10) {

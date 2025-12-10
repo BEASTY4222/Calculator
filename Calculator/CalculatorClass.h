@@ -36,8 +36,6 @@ public:
 
 	char getOperatorToOperate(const int start, const int end, int &index);
 
-	void push_back_within_parenthesies(const char& op);
-
 	double mathing();
 
 	void getNumbers(const std::string& equation);

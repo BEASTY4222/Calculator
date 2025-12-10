@@ -19,7 +19,7 @@ CalculatorClass::CalculatorClass() {
 	buttons[15] = Button(30, 590, 'C');
 	buttons[16] = Button(120, 680, ')');
 	buttons[17] = Button(30, 680, '(');
-	buttons[18] = Button(300, 680, "complex mode", 80, 80);
+	buttons[18] = Button(300, 680, "complex \n  mode", 80, 80);
 	buttons[19] = Button(30, 500, "sin", 80, 80);
 	buttons[20] = Button(210,680,'.');
 
@@ -31,6 +31,7 @@ CalculatorClass::CalculatorClass() {
 
 void CalculatorClass::drawButtons() {
 	if (complexMode) {
+		buttons[18].drawButton();
 		buttons[19].drawButton();
 	}
 	else {
@@ -269,8 +270,6 @@ int CalculatorClass::getSpacesSinceLast(int start) {
 	return spaceBetween;
 }
 
-
-
 void CalculatorClass::handleMiscKeys() {
 	if (equation.length() > 0 && IsKeyPressed(KEY_BACKSPACE)) {
 		if (numbers.size() == 1) {
@@ -403,7 +402,11 @@ bool CalculatorClass::parenthesiesMathing() {
 				
 				
 
-				
+				if (currClosingParenthesies > parenthesies.size()) {
+					currClosingParenthesies = parenthesies.size() / 2;
+					while (parenthesies[currClosingParenthesies] != ')') currClosingParenthesies++;
+				}
+
 
 				char operationChar = getOperatorToOperate(currOpenningParenthesies, currClosingParenthesies,index);
 
