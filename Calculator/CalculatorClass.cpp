@@ -29,6 +29,9 @@ CalculatorClass::CalculatorClass() {
 	buttons[24] = Button(300.0f, 500.0f, "rad", 80.0f, 80.0f);
 	buttons[25] = Button(120.0f, 410.0f, 'e');
 	buttons[26] = Button(210.0f, 410.0f, "pi", 80.0f, 80.0f);
+	buttons[27] = Button(300.0f, 410.0f, "x^2", 80.0f, 80.0f);
+	buttons[28] = Button(300.0f, 320.0f, "root", 80.0f, 80.0f);
+	buttons[29] = Button(120.0f, 320.0f, "e^2", 80.0f, 80.0f);
 
 
 
@@ -47,6 +50,9 @@ void CalculatorClass::drawButtons() {
 		buttons[24].drawButton();
 		buttons[25].drawButton();
 		buttons[26].drawButton();
+		buttons[27].drawButton();
+		buttons[28].drawButton();
+		buttons[29].drawButton();
 	}
 	else {
 		buttons[0].drawButton();
@@ -192,6 +198,15 @@ void CalculatorClass::handleButtonClicks() {
 		}
 		if (buttons[26].isClicked()) {
 			updateEquation(std::to_string(buttons[26].getSymbol()), false);
+
+		}
+		if (buttons[27].isClicked()) {
+
+		}
+		if (buttons[28].isClicked()) {
+
+		}
+		if (buttons[29].isClicked()) {
 
 		}
 	}

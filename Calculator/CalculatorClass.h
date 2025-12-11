@@ -1,9 +1,11 @@
 #pragma once
 #include "raylib.h"
 #include "Button.h"
+
 #include <string>
 #include <algorithm>
 #include <deque>
+#include <cmath>
 
 
 class CalculatorClass {
