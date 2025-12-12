@@ -64,11 +64,13 @@ public:
 				DrawText("2", button.x + 50.0f, button.y + 13.0f, 20.0f, buttonColors.second);
 			}
 			if (buttonSymbol == "root") {
-				DrawText("|", button.x + 28.0f, button.y + 24.0f, 35.0f, buttonColors.second);
-				DrawText("\\", button.x + 13.0f, button.y + 32.0f, 27.0f, buttonColors.second);
-				DrawText("_", button.x + 31.0f, button.y + 1.0f, 35.0f, buttonColors.second);
-				DrawText("_", button.x + 37.0f, button.y + 1.0f, 35.0f, buttonColors.second);
-				DrawText("x", button.x + 36.0f, button.y + 25.0f, 35.0f, buttonColors.second);
+				DrawText("|", button.x + 30.0f, button.y + 24.0f, 35.0f, buttonColors.second);
+				DrawText("\\", button.x + 16.0f, button.y + 34.0f, 22.0f, buttonColors.second);
+				DrawText("_", button.x + 33.0f, button.y + 1.0f, 35.0f, buttonColors.second);
+				DrawText("_", button.x + 39.0f, button.y + 1.0f, 35.0f, buttonColors.second);
+				DrawText("_", button.x + 10.0f, button.y + 23.0f, 20.0f, buttonColors.second);
+
+				DrawText("x", button.x + 39.0f, button.y + 25.0f, 35.0f, buttonColors.second);
 			}
 			if (buttonSymbol == "e^2") {
 				DrawText("e", button.x + 25.0f, button.y + 20.0f, 40.0f, buttonColors.second);
@@ -100,15 +102,16 @@ public:
 		}
 	}
 
-	double getSymbol() const {
-		if (buttonSymbol == "pi") {
-			return PI;
-		}
+	std::string getSymbol() const {
 		if (buttonSymbol[0] == 'e') {
-			return 2.71828;
+			return "2.7182818284";
 		}
-		if (buttonSymbol[0] > '0' && buttonSymbol[0] < '10') {
-			return buttonSymbol[0];
-		}	
+		if (buttonSymbol == "pi") {
+			return "3.1415926535";
+		}
+
+
+
+		return buttonSymbol;
 	}
 };

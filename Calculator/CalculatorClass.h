@@ -15,7 +15,6 @@ class CalculatorClass {
 	std::deque<char> operations;//   +    *   =   +   =
 	std::deque<int> parenthesiesIndexes;
 	std::deque<char> parenthesies;
-	bool firstParenthesis;
 	bool complexMode;
 
 

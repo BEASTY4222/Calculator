@@ -35,7 +35,6 @@ CalculatorClass::CalculatorClass() {
 
 
 
-	firstParenthesis = true;
 	complexMode = false;
 }
 
