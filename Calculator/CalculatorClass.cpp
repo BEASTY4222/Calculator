@@ -32,6 +32,8 @@ CalculatorClass::CalculatorClass() {
 	buttons[27] = Button(300.0f, 410.0f, "x^2", 80.0f, 80.0f);
 	buttons[28] = Button(300.0f, 320.0f, "root", 80.0f, 80.0f);
 	buttons[29] = Button(120.0f, 320.0f, "e^2", 80.0f, 80.0f);
+	buttons[30] = Button(210.0f, 320.0f, "|x|", 80.0f, 80.0f);
+	buttons[31] = Button(30.0f, 410.0f, "In", 80.0f, 80.0f);
 
 
 
@@ -52,6 +54,8 @@ void CalculatorClass::drawButtons() {
 		buttons[27].drawButton();
 		buttons[28].drawButton();
 		buttons[29].drawButton();
+		buttons[30].drawButton();
+		buttons[31].drawButton();
 	}
 	else {
 		buttons[0].drawButton();
@@ -174,30 +178,26 @@ void CalculatorClass::handleButtonClicks() {
 		}
 	}
 	else {
-		if (buttons[18].isClicked()) {
-
-		}
 		if (buttons[19].isClicked()) {
-
+			updateEquation(std::to_string(sin(getLastNumber())), false);
 		}
 		if (buttons[21].isClicked()) {
-
+			updateEquation(std::to_string(cos(getLastNumber())), false);
 		}
 		if (buttons[22].isClicked()) {
-
+			updateEquation(std::to_string(tan(getLastNumber())), false);
 		}
 		if (buttons[23].isClicked()) {
-
+			updateEquation(std::to_string(log(getLastNumber())), false);
 		}
-		if (buttons[24].isClicked()) {
-
+		if (buttons[24].isClicked()) {//radians
+			updateEquation(std::to_string(getLastNumber() * PI / 180.0), false);
 		}
 		if (buttons[25].isClicked()) {
 			updateEquation(buttons[25].getSymbol(), false);
 		}
 		if (buttons[26].isClicked()) {
 			updateEquation(buttons[26].getSymbol(), false);
-
 		}
 		if (buttons[27].isClicked()) {
 			updateEquation(std::to_string(pow(getLastNumber(), 2)), false);
@@ -206,7 +206,13 @@ void CalculatorClass::handleButtonClicks() {
 			updateEquation(std::to_string(sqrt(getLastNumber())), false);
 		}
 		if (buttons[29].isClicked()) {
-			updateEquation(std::to_string(pow(std::stod(buttons[25].getSymbol()),2)),false);
+			updateEquation(std::to_string(pow(std::stod(buttons[25].getSymbol()), 2)), false);
+		}
+		if(buttons[30].isClicked()) {
+			updateEquation(std::to_string(abs(getLastNumber())), false);
+		}
+		if (buttons[31].isClicked()) {
+
 		}
 	}
 	// clear

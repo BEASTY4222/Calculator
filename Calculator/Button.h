@@ -76,6 +76,10 @@ public:
 				DrawText("e", button.x + 25.0f, button.y + 20.0f, 40.0f, buttonColors.second);
 				DrawText("2", button.x + 50.0f, button.y + 13.0f, 20.0f, buttonColors.second);
 			}
+			if (buttonSymbol == "|x|") {
+				DrawText("|x|", button.x + 22.0f, button.y + 20.0f, 40.0f, buttonColors.second);
+			}
+			
 		}
 		else {
 			// small symbols
