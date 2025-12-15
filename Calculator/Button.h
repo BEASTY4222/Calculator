@@ -110,7 +110,40 @@ public:
 			return "3.1415926535";
 		}
 
-
+		// I do not know why I am getting these weird char values for numbers, so this is a workaround
+		switch (buttonSymbol[0])
+		{
+		case '\x1':
+			return "1";
+		case '\x2':
+			return "2";
+		case '\x3':
+			return "3";
+		case '\x4':
+			return "4";
+		case '\x5':
+			return "5";
+		case '\x6':
+			return "6";
+		case '\x7':
+			return "7";
+		case '\x8':
+			return "8";
+		case '\x9':
+			return "9";
+		case '\x0':
+			return "0";
+		case '+':
+			return "+";
+		case '-':
+			return "-";
+		case '*':
+			return "*";
+		case '/':
+			return "/";
+		default:
+			break;
+		}
 
 		return buttonSymbol;
 	}

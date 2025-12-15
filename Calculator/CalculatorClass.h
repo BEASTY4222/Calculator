@@ -41,5 +41,7 @@ public:
 
 	void getNumbers(const std::string& equation);
 
+	double getLastNumber();
+
 	bool parenthesiesMathing();
 };

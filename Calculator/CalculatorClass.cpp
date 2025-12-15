@@ -90,25 +90,25 @@ void CalculatorClass::handleButtonClicks() {
 	// numbers
 	if (!complexMode) {
 		if (buttons[0].isClicked() || IsKeyPressed(KEY_ONE)) {
-			updateEquation(std::to_string(buttons[0].getSymbol()), false);
+			updateEquation(buttons[0].getSymbol(), false);
 		}if (buttons[1].isClicked() || IsKeyPressed(KEY_TWO)) {
-			updateEquation(std::to_string(buttons[1].getSymbol()), false);
+			updateEquation((buttons[1].getSymbol()), false);
 		}if (buttons[2].isClicked() || IsKeyPressed(KEY_THREE)) {
-			updateEquation(std::to_string(buttons[2].getSymbol()), false);
+			updateEquation((buttons[2].getSymbol()), false);
 		}if (buttons[3].isClicked() || IsKeyPressed(KEY_FOUR)) {
-			updateEquation(std::to_string(buttons[3].getSymbol()), false);
+			updateEquation((buttons[3].getSymbol()), false);
 		}if (buttons[4].isClicked() || IsKeyPressed(KEY_FIVE)) {
-			updateEquation(std::to_string(buttons[4].getSymbol()), false);
+			updateEquation((buttons[4].getSymbol()), false);
 		}if (buttons[5].isClicked() || IsKeyPressed(KEY_SIX)) {
-			updateEquation(std::to_string(buttons[5].getSymbol()), false);
+			updateEquation((buttons[5].getSymbol()), false);
 		}if (buttons[6].isClicked() || IsKeyPressed(KEY_SEVEN)) {
-			updateEquation(std::to_string(buttons[6].getSymbol()), false);
+			updateEquation((buttons[6].getSymbol()), false);
 		}if (buttons[7].isClicked() || IsKeyPressed(KEY_EIGHT)) {
-			updateEquation(std::to_string(buttons[7].getSymbol()), false);
+			updateEquation((buttons[7].getSymbol()), false);
 		}if (buttons[8].isClicked() || IsKeyPressed(KEY_NINE)) {
-			updateEquation(std::to_string(buttons[8].getSymbol()), false);
+			updateEquation((buttons[8].getSymbol()), false);
 		}if (buttons[9].isClicked() || IsKeyPressed(KEY_ZERO)) {
-			updateEquation(std::to_string(buttons[9].getSymbol()), false);
+			updateEquation((buttons[9].getSymbol()), false);
 		}
 
 		// operators
@@ -125,8 +125,8 @@ void CalculatorClass::handleButtonClicks() {
 				}
 			}
 
-			updateEquation(std::string(1, static_cast<char>(buttons[10].getSymbol())), false);
-			operations.push_back(static_cast<char>(buttons[10].getSymbol()));
+			updateEquation(buttons[10].getSymbol(), false);
+			operations.push_back(buttons[10].getSymbol()[0]);
 
 		}if (buttons[11].isClicked()) {
 			if (!parenthesies.empty()) {
@@ -141,8 +141,8 @@ void CalculatorClass::handleButtonClicks() {
 				}
 			}
 
-			updateEquation(std::string(1, static_cast<char>(buttons[11].getSymbol())), false);
-			operations.push_back(static_cast<char>(buttons[11].getSymbol()));
+			updateEquation(buttons[11].getSymbol(), false);
+			operations.push_back(buttons[11].getSymbol()[0]);
 		}if (buttons[13].isClicked()) {
 			if (!parenthesies.empty()) {
 				if (parenthesies.front() == '(' && parenthesies.back() != ')') {
@@ -155,8 +155,8 @@ void CalculatorClass::handleButtonClicks() {
 					}
 				}
 			}
-			updateEquation(std::string(1, static_cast<char>(buttons[13].getSymbol())), false);
-			operations.push_back(static_cast<char>(buttons[13].getSymbol()));
+			updateEquation(buttons[13].getSymbol(), false);
+			operations.push_back(buttons[13].getSymbol()[0]);
 		}if (buttons[14].isClicked()) {
 			if (!parenthesies.empty()) {
 				if (parenthesies.front() == '(' && parenthesies.back() != ')') {
@@ -169,8 +169,8 @@ void CalculatorClass::handleButtonClicks() {
 					}
 				}
 			}
-			updateEquation(std::string(1, static_cast<char>(buttons[14].getSymbol())), false);
-			operations.push_back(static_cast<char>(buttons[14].getSymbol()));
+			updateEquation(buttons[14].getSymbol(), false);
+			operations.push_back(buttons[14].getSymbol()[0]);
 		}
 	}
 	else {
@@ -193,20 +193,20 @@ void CalculatorClass::handleButtonClicks() {
 
 		}
 		if (buttons[25].isClicked()) {
-			updateEquation(std::to_string(buttons[25].getSymbol()), false);
+			updateEquation(buttons[25].getSymbol(), false);
 		}
 		if (buttons[26].isClicked()) {
-			updateEquation(std::to_string(buttons[26].getSymbol()), false);
+			updateEquation(buttons[26].getSymbol(), false);
 
 		}
 		if (buttons[27].isClicked()) {
-
+			updateEquation(std::to_string(pow(getLastNumber(), 2)), false);
 		}
-		if (buttons[28].isClicked()) {
-
+		if (buttons[28].isClicked()) {// root
+			updateEquation(std::to_string(sqrt(getLastNumber())), false);
 		}
 		if (buttons[29].isClicked()) {
-
+			updateEquation(std::to_string(pow(std::stod(buttons[25].getSymbol()),2)),false);
 		}
 	}
 	// clear
@@ -317,6 +317,44 @@ void CalculatorClass::getNumbers(const std::string & equation) {
 		numbers.push_back(number);
 	}
 
+}
+
+double CalculatorClass::getLastNumber() {
+	int index;
+	if (equation.size() > 1) index = 0;
+	else index = getLatestIndexFromEquation(equation.back());
+
+	std::string numberStr = equation.substr(index);
+	for (int i = 0;i < numberStr.size();i++) equation.pop_back();
+
+	double number = 0;
+	bool isDecimal = false;
+	double decimalPlace = 0.1;
+	for (char c : numberStr) {
+		if (isdigit(c)) {
+			if (isDecimal) {
+				number += (c - '0') * decimalPlace;
+				decimalPlace *= 0.1;
+			}
+			else {
+				number = number * 10 + (c - '0');
+			}
+		}
+		else if (c == '.') {
+			isDecimal = true;
+		}
+		else {
+			// Non-digit and non-decimal point: return number if any
+			if (isDecimal || number != 0) {
+				return number;
+			}
+		}
+	}
+	// Return the last number if the string ends with a number
+	if (isDecimal || number != 0) {
+		return number;
+	}
+	return 0; // No number found
 }
 
 int CalculatorClass::getLatestIndexFromEquation(const char& target) {
