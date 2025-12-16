@@ -9,7 +9,7 @@
 
 
 class CalculatorClass {
-	Button buttons[40];
+	Button buttons[31];
 	std::string equation;
 	std::deque<double> numbers;// 1     2   3   6   1   7
 	std::deque<char> operations;//   +    *   =   +   =

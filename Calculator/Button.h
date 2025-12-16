@@ -13,8 +13,9 @@ private:
 	
 
 public:
-	Button() = default;
-	Button(const float& x, const float& y, const std::string& buttonSymbol, const float& buttonWidth, const float& buttonHeight) {
+	inline Button() = default;
+
+	inline Button(const float& x, const float& y, const std::string& buttonSymbol, const float& buttonWidth, const float& buttonHeight) {
 		button.x = x;
 		button.y = y;
 		button.width = buttonWidth;
@@ -24,7 +25,8 @@ public:
 		buttonColors.first = BLACK;
 		buttonColors.second = GREEN;
 	}
-	Button(const float &x,const float &y,const char & buttonSymbol) {
+
+	inline Button(const float &x,const float &y,const char & buttonSymbol) {
 		button.x = x;
 		button.y = y;
 		button.width = 80.0f;
@@ -35,14 +37,33 @@ public:
 		buttonColors.second = GREEN;
 
 	}
-	void drawButton(){
+
+	inline void changeXY(const float& x, const float& y) {
+		this->button.x = x;
+		this->button.y = y;
+	}
+	inline void changeWidthHeight(const float& width, const float& height) {
+		this->button.width = width;
+		this->button.height = height;
+	}
+	inline void changeSymbol(const std::string& newSymbol) {
+		this->buttonSymbol = newSymbol;
+	}
+
+	inline void drawButton(){
 		DrawRectangleRec(button, buttonColors.first);
 		DrawRectangleLinesEx(button, 5.0f, GREEN);
 
 		if (buttonSymbol.length() >= 3.0) {
 			// long symbols
-			if (buttonSymbol == "complex \n  mode") {
-				DrawText(buttonSymbol.c_str(), button.x + 10.0f, button.y + 20.0f, 18.0f, buttonColors.second);
+			if (buttonSymbol.length() >= 6) {
+				if (buttonSymbol == "complex \n  mode") {
+					DrawText(buttonSymbol.c_str(), button.x + 10.0f, button.y + 20.0f, 18.0f, buttonColors.second);
+				}
+				else if (buttonSymbol == "normal mode") {
+					DrawText(buttonSymbol.c_str(), button.x + 55.0f, button.y + 20.0f, 40.0f, buttonColors.second);
+				}
+				
 			}
 			if (buttonSymbol == "sin") {
 				DrawText(buttonSymbol.c_str(), button.x + 15.0f, button.y + 20.0f, 40.0f, buttonColors.second);
@@ -79,7 +100,6 @@ public:
 			if (buttonSymbol == "|x|") {
 				DrawText("|x|", button.x + 22.0f, button.y + 20.0f, 40.0f, buttonColors.second);
 			}
-			
 		}
 		else {
 			// small symbols
@@ -91,7 +111,8 @@ public:
 			}
 		}
 	}
-	bool isClicked() {
+
+	inline bool isClicked() {
 		if (CheckCollisionPointRec(GetMousePosition(), button)) {
 			buttonColors.first = GREEN;
 			buttonColors.second = BLACK;
@@ -106,7 +127,7 @@ public:
 		}
 	}
 
-	std::string getSymbol() const {
+	inline std::string getSymbol() const {
 		if (buttonSymbol[0] == 'e') {
 			return "2.7182818284";
 		}

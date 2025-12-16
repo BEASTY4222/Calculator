@@ -20,20 +20,19 @@ CalculatorClass::CalculatorClass() {
 	buttons[16] = Button(120.0f, 680.0f, ')');
 	buttons[17] = Button(30.0f, 680.0f, '(');
 	buttons[18] = Button(300.0f, 680.0f, "complex \n  mode", 80.0f, 80.0f);
-	buttons[19] = Button(30.0f, 500.0f, "sin", 80.0f, 80.0f);
+	buttons[19] = Button(30.0f, 410.0f, "sin", 80.0f, 80.0f);
 	buttons[20] = Button(210.0f, 680.0f, '.');
 
-	buttons[21] = Button(120.0f, 500.0f, "cos", 80.0f, 80.0f);
-	buttons[22] = Button(210.0f, 500.0f, "tan", 80.0f, 80.0f);
+	buttons[21] = Button(120.0f, 410.0f, "cos", 80.0f, 80.0f);
+	buttons[22] = Button(210.0f, 410.0f, "tan", 80.0f, 80.0f);
 	buttons[23] = Button(30.0f, 320.0f, "log", 80.0f, 80.0f);
-	buttons[24] = Button(300.0f, 500.0f, "rad", 80.0f, 80.0f);
-	buttons[25] = Button(120.0f, 410.0f, 'e');
-	buttons[26] = Button(210.0f, 410.0f, "pi", 80.0f, 80.0f);
-	buttons[27] = Button(300.0f, 410.0f, "x^2", 80.0f, 80.0f);
+	buttons[24] = Button(300.0f, 410.0f, "rad", 80.0f, 80.0f);
+	buttons[25] = Button(120.0f, 500.0f, 'e');
+	buttons[26] = Button(210.0f, 500.0f, "pi", 80.0f, 80.0f);
+	buttons[27] = Button(300.0f, 500.0f, "x^2", 80.0f, 80.0f);
 	buttons[28] = Button(300.0f, 320.0f, "root", 80.0f, 80.0f);
 	buttons[29] = Button(120.0f, 320.0f, "e^2", 80.0f, 80.0f);
 	buttons[30] = Button(210.0f, 320.0f, "|x|", 80.0f, 80.0f);
-	buttons[31] = Button(30.0f, 410.0f, "In", 80.0f, 80.0f);
 
 
 
@@ -42,6 +41,11 @@ CalculatorClass::CalculatorClass() {
 
 void CalculatorClass::drawButtons() {
 	if (complexMode) {
+		buttons[18].changeXY(30.0f, 590.0f);
+		buttons[18].changeWidthHeight(350.0f, 80.0f);
+		buttons[18].changeSymbol("normal mode");
+
+		buttons[15].changeXY(30.0f, 500.0f);
 		buttons[15].drawButton();
 		buttons[18].drawButton();
 		buttons[19].drawButton();
@@ -58,6 +62,11 @@ void CalculatorClass::drawButtons() {
 		buttons[31].drawButton();
 	}
 	else {
+		buttons[18].changeXY(300.0f, 680.0f);
+		buttons[18].changeWidthHeight(80.0f, 80.0f);
+		buttons[18].changeSymbol("complex \n  mode");
+
+		buttons[15].changeXY(30.0f, 590.0f);
 		buttons[0].drawButton();
 		buttons[1].drawButton();
 		buttons[2].drawButton();
@@ -210,9 +219,6 @@ void CalculatorClass::handleButtonClicks() {
 		}
 		if(buttons[30].isClicked()) {
 			updateEquation(std::to_string(abs(getLastNumber())), false);
-		}
-		if (buttons[31].isClicked()) {
-
 		}
 	}
 	// clear
